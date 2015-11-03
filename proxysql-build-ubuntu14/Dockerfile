@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y\
     gdb\
     gdbserver\
     git\
+    python\
     libmysqlclient-dev\
     libssl-dev\
     libtool
