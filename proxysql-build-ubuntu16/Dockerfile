@@ -14,4 +14,7 @@ RUN apt-get update && apt-get install -y\
     python\
     libmysqlclient-dev\
     libssl-dev\
-    libtool
+    libtool\
+    libboost1.58-all-dev\
+    wget
+RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
