@@ -14,4 +14,5 @@ RUN apt-get update && apt-get install -y\
     python\
     libmysqlclient-dev\
     libssl-dev\
-    libtool
+    libtool\
+    libboost1.49-all-dev
