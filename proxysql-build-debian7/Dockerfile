@@ -3,7 +3,6 @@ MAINTAINER Rene Cannao <rene.cannao@gmail.com>
 
 RUN apt-get update && apt-get install -y\
     automake\
-    cmake\
     equivs\
     make\
     g++\
@@ -23,3 +22,5 @@ RUN DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.9-1_all.deb
 RUN apt-get update
 RUN apt-get -y install libmysqlclient20 libmysqlclient-dev
 RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
+RUN wget -q https://cmake.org/files/v3.9/cmake-3.9.6.tar.gz
+RUN tar -zxf cmake-3.9.6.tar.gz && cd cmake-3.9.6 && ./bootstrap && make && make install
