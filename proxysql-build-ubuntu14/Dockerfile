@@ -4,7 +4,7 @@ MAINTAINER Rene Cannao <rene.cannao@gmail.com>
 RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-apt-config' > /etc/apt/sources.list.d/mysql.list
 RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' >> /etc/apt/sources.list.d/mysql.list
 RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-tools' >> /etc/apt/sources.list.d/mysql.list
-RUN apt-get update && apt-get install -y\
+RUN apt-get update && apt-get install -y --force-yes\
     automake\
     cmake\
     equivs\
