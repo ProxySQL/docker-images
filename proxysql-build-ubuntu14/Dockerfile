@@ -6,7 +6,7 @@ RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' >> /etc/apt/so
 RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-tools' >> /etc/apt/sources.list.d/mysql.list
 RUN apt-get update && apt-get install -y --force-yes\
     automake\
-    cmake\
+    cmake3\
     equivs\
     make\
     g++\
