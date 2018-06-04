@@ -1,0 +1,20 @@
+FROM ubuntu:18.04
+MAINTAINER Rene Cannao <rene.cannao@gmail.com>
+
+RUN apt-get update && apt-get install -y\
+    automake\
+    cmake\
+    equivs\
+    make\
+    g++\
+    gcc\
+    gdb\
+    gdbserver\
+    git\
+    python\
+    libmysqlclient-dev\
+    libssl-dev\
+    libtool\
+    libboost1.62-all-dev\
+    wget
+RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
