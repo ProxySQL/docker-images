@@ -1,2 +1,2 @@
 #!/bin/sh
-docker push renecannao/proxysql:build-debian9
+docker push renecannao/proxysql:build-debian10

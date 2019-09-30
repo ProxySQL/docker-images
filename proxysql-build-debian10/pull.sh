@@ -1,2 +1,2 @@
 #!/bin/sh
-docker pull renecannao/proxysql:build-debian9
+docker pull renecannao/proxysql:build-debian10
