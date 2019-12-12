@@ -1,10 +1,7 @@
 FROM ubuntu:14.04
 MAINTAINER Rene Cannao <rene.cannao@gmail.com>
 
-RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-apt-config' > /etc/apt/sources.list.d/mysql.list
-RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' >> /etc/apt/sources.list.d/mysql.list
-RUN echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-tools' >> /etc/apt/sources.list.d/mysql.list
-RUN apt-get update && apt-get install -y --force-yes\
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C718D3B5072E1F5 && echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-apt-config' > /etc/apt/sources.list.d/mysql.list && echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' >> /etc/apt/sources.list.d/mysql.list && echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-tools' >> /etc/apt/sources.list.d/mysql.list && apt-get update && apt-get install -y --force-yes\
     automake\
     cmake3\
     equivs\
@@ -15,6 +12,7 @@ RUN apt-get update && apt-get install -y --force-yes\
     gdbserver\
     git\
     python\
+    libmysqlclient20\
     libmysqlclient-dev\
     libssl-dev\
     libtool\
