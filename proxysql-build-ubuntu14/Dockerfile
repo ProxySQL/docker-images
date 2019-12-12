@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --force-yes\
     gdbserver\
     git\
     python\
+    libgnutls-dev\
     libmysqlclient-dev\
     libmysqlclient20 \
     libssl-dev\
