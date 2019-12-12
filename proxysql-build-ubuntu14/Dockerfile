@@ -16,7 +16,6 @@ RUN apt-get update && apt-get install -y --force-yes\
     git\
     python\
     libmysqlclient-dev\
-    libmysqlclient20 \
     libssl-dev\
     libtool\
     libboost1.55-all-dev\
