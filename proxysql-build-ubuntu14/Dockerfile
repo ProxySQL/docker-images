@@ -12,11 +12,8 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C718D3B5072E1F5 &&
     gdbserver\
     git\
     python\
-<<<<<<< HEAD
     libgnutls-dev\
-=======
     libmysqlclient20\
->>>>>>> 2403518f27bceaa76deea8450829700be6d4538d
     libmysqlclient-dev\
     libssl-dev\
     libtool\
