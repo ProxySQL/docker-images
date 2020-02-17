@@ -12,8 +12,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C718D3B5072E1F5 &&
     gdbserver\
     git\
     python\
-    libgnutls-dev\
-    libmysqlclient20\
+    libgnutls28-dev\
     libmysqlclient-dev\
     libssl-dev\
     libtool\
