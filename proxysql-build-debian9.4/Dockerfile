@@ -11,8 +11,9 @@ RUN apt-get update && apt-get install -y\
     gdb\
     gdbserver\
     git\
+    gnutls-dev\
     python\
-    libgnutls-dev\
+    libgnutls28-dev\
     libmariadbclient-dev\
     libssl-dev\
     libtool\

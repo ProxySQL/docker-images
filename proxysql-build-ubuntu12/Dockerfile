@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y\
     gdb\
     gdbserver\
     git\
-    libgnutls-dev\
+    libgnutls28-dev\
     libmysqlclient-dev\
     libssl-dev\
     libtool\
