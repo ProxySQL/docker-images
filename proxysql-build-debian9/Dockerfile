@@ -22,7 +22,4 @@ RUN apt-get update && apt-get install -y\
     libunwind-dev\
     vim
 
-ADD entrypoint.sh /opt/entrypoint.sh
-RUN chmod +x /opt/entrypoint.sh
-ENTRYPOINT /opt/entrypoint.sh
 
