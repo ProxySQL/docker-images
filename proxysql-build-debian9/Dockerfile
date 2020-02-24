@@ -21,5 +21,3 @@ RUN apt-get update && apt-get install -y\
     libunwind8\
     libunwind-dev\
     vim
-
-
