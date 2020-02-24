@@ -24,7 +24,3 @@ RUN apt-get update && apt-get install -y\
     wget
 RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
 
-ADD entrypoint.sh /opt/entrypoint.sh
-RUN chmod +x /opt/entrypoint.sh
-ENTRYPOINT /opt/entrypoint.sh
-
