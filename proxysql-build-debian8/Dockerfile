@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y\
     automake\
     wget\
     equivs\
+    gmake\
     make\
     g++\
     gcc\
