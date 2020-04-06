@@ -6,6 +6,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C718D3B5072E1F5 &&
     automake\
     cmake3\
     equivs\
+    gmake\
     make\
     g++\
     gcc\
