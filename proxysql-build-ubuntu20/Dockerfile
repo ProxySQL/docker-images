@@ -1,7 +1,9 @@
-FROM ubuntu:16.04
-MAINTAINER Rene Cannao <rene.cannao@gmail.com>
+FROM ubuntu:20.04
+MAINTAINER Nick Vyzas <nick@proxysql.com>
 
 RUN chmod 777 /tmp
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update && apt-get install -y\
     automake\
     cmake\
@@ -18,7 +20,7 @@ RUN apt-get update && apt-get install -y\
     libmysqlclient-dev\
     libssl-dev\
     libtool\
-    libboost1.58-all-dev\
+    libboost-all-dev\
     libunwind8\
     libunwind-dev\
     wget
