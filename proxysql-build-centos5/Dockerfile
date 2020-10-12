@@ -1,7 +1,7 @@
-FROM centos:centos6.7
+FROM centos:centos5
 MAINTAINER Rene Cannao <rene.cannao@gmail.com>
 
-RUN yum install -y automake bzip2 make git openssl openssl-devel patch tar wget
+RUN yum install -y automake bzip2 make git openssl openssl-devel patch tar wget gnutls
 RUN wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
 RUN yum -y install devtoolset-2-gcc devtoolset-2-binutils devtoolset-2-gcc-c++ openssl-devel patch
 RUN ln -s /opt/rh/devtoolset-2/root/usr/bin/gcc /usr/bin/cc
@@ -15,3 +15,5 @@ RUN cd /usr/local/src && \
   tar -xzvf cmake-2.8.10.2.tar.gz && \
   cd cmake-2.8.10.2 && \
   ./bootstrap && make && make install
+RUN cd /root && wget https://cmake.org/files/v3.17/cmake-3.17.0.tar.gz && tar -zxf cmake-3.17.0.tar.gz && cd cmake-3.17.0 && ./configure && gmake && gmake install && cd .. && rm -rf cmake-3.17.0.tar.gz cmake-3.9.2
+
