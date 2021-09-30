@@ -1,39 +1,44 @@
 [C6.7-base]
 name=CentOS-6.7 - Base
-baseurl=http://vault.centos.org/6.7/os/$basearch/
+baseurl=https://vault.centos.org/6.7/os/$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
 enabled=1
 metadata_expire=never
+sslverify=0
 
 [C6.7-updates]
 name=CentOS-6.7 - Updates
-baseurl=http://vault.centos.org/6.7/updates/$basearch/
+baseurl=https://vault.centos.org/6.7/updates/$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
 enabled=1
 metadata_expire=never
+sslverify=0
 
 [C6.7-extras]
 name=CentOS-6.7 - Extras
-baseurl=http://vault.centos.org/6.7/extras/$basearch/
+baseurl=https://vault.centos.org/6.7/extras/$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
 enabled=1
 metadata_expire=never
+sslverify=0
 
 [C6.7-contrib]
 name=CentOS-6.7 - Contrib
-baseurl=http://vault.centos.org/6.7/contrib/$basearch/
+baseurl=https://vault.centos.org/6.7/contrib/$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
 enabled=0
 metadata_expire=never
+sslverify=0
 
 [C6.7-centosplus]
 name=CentOS-6.7 - CentOSPlus
-baseurl=http://vault.centos.org/6.7/centosplus/$basearch/
+baseurl=https://vault.centos.org/6.7/centosplus/$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
 enabled=0
 metadata_expire=never
+sslverify=0
