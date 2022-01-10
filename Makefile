@@ -20,7 +20,13 @@ build: build-centos build-fedora build-debian build-ubuntu
 
 .SILENT:
 .PHONY: build-centos
-build-centos: proxysql-build-centos6.7v2 proxysql-build-centos7 proxysql-build-centos8
+build-centos: proxysql-build-centos6 proxysql-build-centos6.7v2 proxysql-build-centos7 proxysql-build-centos8
+
+.PHONY: proxysql-build-centos6
+proxysql-build-centos6:
+	echo 'building proxysql-build-centos6'
+	docker build --rm --tag proxysql/packaging:build-centos6 proxysql-build-centos6 > /dev/null
+	echo 'tagged proxysql-build-centos6'
 
 .PHONY: proxysql-build-centos6.7v2
 proxysql-build-centos6.7v2:
