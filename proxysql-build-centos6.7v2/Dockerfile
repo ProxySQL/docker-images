@@ -12,4 +12,4 @@ RUN wget --no-check-certificate https://vault.centos.org/6.7/updates/x86_64/Pack
 RUN wget --no-check-certificate https://vault.centos.org/6.7/updates/x86_64/Packages/perl-IPC-Cmd-0.56-141.el6_7.1.x86_64.rpm && rpm -i perl-IPC-Cmd-0.56-141.el6_7.1.x86_64.rpm && rm -f perl-IPC-Cmd-0.56-141.el6_7.1.x86_64.rpm
 
 # build && install current cmake
-RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1
+RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1
