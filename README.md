@@ -23,4 +23,9 @@ https://hub.docker.com/r/renecannao/proxysql/
 - added runtime dependencies
 
 #### HowTo
-run make inside of one of the folders to build images
+run make inside of one of the folders to build images,
+e.g:
+
+    # cd build-images
+    # make clean
+    # make proxysql-build-debian11
