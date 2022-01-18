@@ -1,0 +1,31 @@
+FROM ubuntu:20.04
+MAINTAINER Miro Stauder <miro@sysown.com>
+
+RUN chmod 777 /tmp
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# clang build tools
+RUN apt-get update && apt-get install -y\
+	make automake\
+	git wget\
+	clang lld\
+	python python3
+
+# libtool needs to installed separately
+# otherwise it pulls in gcc
+RUN apt-get install -y\
+	libtool
+
+# proxysql build dependencies
+RUN apt-get install -y\
+	gnutls-dev libgnutls28-dev libssl-dev\
+	libmysqlclient-dev\
+	libunwind8 libunwind-dev\
+	libboost-all-dev
+
+RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
+
+# build && install current cmake
+RUN ln -s /usr/bin/make /usr/bin/gmake
+RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1
