@@ -6,7 +6,15 @@ https://hub.docker.com/r/renecannao/proxysql/
 #### build-images
 - used for building of proxysql packages
 - based on upstream images
-- added build tooling
+- added GCC build tooling
+- added build dependencies
+
+#### build-clang-images
+- used for building of proxysql packages
+- based on upstream images
+- added CLANG build tooling
+  - clang must use lld
+  - RH based distros still pull GCC as dependency
 - added build dependencies
 
 #### pkgtest-images
