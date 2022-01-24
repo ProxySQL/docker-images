@@ -16,7 +16,7 @@ cleanall:
 
 
 .PHONY: pkgtest
-pkgtest: pkgtest-centos pkgtest-fedora pkgtest-debian pkgtest-ubuntu
+pkgtest: pkgtest-centos pkgtest-fedora pkgtest-debian pkgtest-ubuntu pkgtest-suse
 
 
 .SILENT:
@@ -135,3 +135,19 @@ proxysql-pkgtest-ubuntu20:
 	docker build --rm --tag proxysql/packaging:pkgtest-ubuntu20 proxysql-pkgtest-ubuntu20 > /dev/null
 	echo 'tagged proxysql-pkgtest-ubuntu20'
 
+
+.SILENT:
+.PHONY: pkgtest-suse
+pkgtest-suse: proxysql-pkgtest-opensuse15
+
+.PHONY: proxysql-pkgtest-opensuse15
+proxysql-pkgtest-opensuse15:
+	echo 'pkgtesting proxysql-pkgtest-opensuse15'
+	docker build --rm --tag proxysql/packaging:pkgtest-opensuse15 proxysql-pkgtest-opensuse15
+	echo 'tagged proxysql-pkgtest-opensuse15'
+
+
+.ONESHELL: images
+images:
+	echo 'Finished building'
+	docker images | grep "proxysql/packaging"

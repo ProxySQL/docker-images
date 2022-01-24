@@ -16,7 +16,7 @@ cleanall:
 
 
 .PHONY: build
-build: build-clang-centos build-clang-fedora build-clang-debian build-clang-ubuntu
+build: build-clang-centos build-clang-fedora build-clang-debian build-clang-ubuntu build-clang-suse
 
 .SILENT:
 .PHONY: build-clang-centos
@@ -62,16 +62,18 @@ build-clang-ubuntu20:
 	echo 'tagged build-clang-ubuntu20'
 
 
+.SILENT:
+.PHONY: build-clang-suse
+build-clang-suse: build-clang-opensuse15
+
+.PHONY: build-clang-opensuse15
+build-clang-opensuse15:
+	echo 'building build-clang-opensuse15'
+	docker build --rm --tag proxysql/packaging:build-clang-opensuse15 build-clang-opensuse15
+	echo 'tagged build-clang-opensuse15'
+
 
 .ONESHELL: images
 images:
 	echo 'Finished building'
 	docker images | grep "proxysql/packaging"
-
-
-
-
-
-
-
-

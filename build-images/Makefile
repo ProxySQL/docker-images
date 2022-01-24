@@ -16,7 +16,7 @@ cleanall:
 
 
 .PHONY: build
-build: build-centos build-fedora build-debian build-ubuntu
+build: build-centos build-fedora build-debian build-ubuntu build-suse
 
 .SILENT:
 .PHONY: build-centos
@@ -140,16 +140,18 @@ proxysql-build-ubuntu20:
 	echo 'tagged proxysql-build-ubuntu20'
 
 
+.SILENT:
+.PHONY: build-suse
+build-suse: proxysql-build-opensuse15
+
+.PHONY: proxysql-build-opensuse15
+proxysql-build-opensuse15:
+	echo 'building proxysql-build-opensuse15'
+	docker build --rm --tag proxysql/packaging:build-opensuse15 proxysql-build-opensuse15 > /dev/null
+	echo 'tagged proxysql-build-opensuse15'
+
 
 .ONESHELL: images
 images:
 	echo 'Finished building'
 	docker images | grep "proxysql/packaging"
-
-
-
-
-
-
-
-
