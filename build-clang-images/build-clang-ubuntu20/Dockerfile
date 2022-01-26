@@ -5,7 +5,7 @@ RUN chmod 777 /tmp
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# clang build tools
+# clang & build tools
 RUN apt-get update && apt-get install -y\
 	make automake\
 	git wget\
@@ -22,9 +22,15 @@ RUN apt-get install -y\
 	gnutls-dev libgnutls28-dev libssl-dev\
 	libmysqlclient-dev\
 	libunwind8 libunwind-dev\
-	libboost-all-dev
+	libboost-all-dev\
+	uuid-dev
 
 RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
+
+ENV CC=clang
+ENV CXX=clang++
+
+RUN ${CXX} --version
 
 # build && install current cmake
 RUN ln -s /usr/bin/make /usr/bin/gmake

@@ -3,6 +3,7 @@ MAINTAINER Miro Stauder <miro@sysown.com>
 
 RUN zypper update -y
 
+# clang & build tools
 RUN zypper install -y\
 	clang lld
 
@@ -21,7 +22,8 @@ RUN zypper install -y\
 	libunwind libunwind-devel\
 	libcurl-devel\
 	zlib-devel\
-	libc++-devel libstdc++-devel
+	libc++-devel libstdc++-devel\
+	libuuid-devel
 
 
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-11 50

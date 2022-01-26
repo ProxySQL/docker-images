@@ -2,8 +2,8 @@ FROM opensuse/leap:15
 MAINTAINER Miro Stauder <miro@sysown.com>
 
 RUN zypper update -y
-#RUN zypper install -y -t pattern devel_basis
 
+# gcc & build tools
 #RUN zypper install -y\
 #	gcc10 gcc10-c++
 
@@ -21,7 +21,8 @@ RUN zypper install -y\
 	openssl libopenssl-devel\
 	gnutls libgnutls-devel\
 	libunwind libunwind-devel\
-	zlib-devel
+	zlib-devel\
+	libuuid-devel
 
 #RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 #RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50

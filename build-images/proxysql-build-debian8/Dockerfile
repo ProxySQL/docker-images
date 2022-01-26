@@ -1,27 +1,29 @@
 FROM debian:8
-MAINTAINER Rene Cannao <rene.cannao@gmail.com>
+MAINTAINER Miro Stauder <miro@sysown.com>
 
 RUN chmod 777 /tmp
+
+# gcc & build tools
 RUN apt-get update && apt-get install -y\
-    automake\
-    wget\
-    equivs\
-    make\
-    g++\
-    gcc\
-    gdb\
-    gdbserver\
-    git\
-    gnutls-dev\
-    python\
-    libgnutls28-dev\
-    libmysqlclient-dev\
-    libssl-dev\
-    libunwind8\
-    libunwind-dev\
-    libtool\
-    vim\
-    python3
+	make automake\
+	git wget\
+	gcc g++\
+	libtool\
+	gdb gdbserver\
+	equivs\
+	python python3
+
+# proxysql build dependencies
+RUN apt-get install -y\
+	libssl-dev gnutls-dev libgnutls28-dev\
+	libmysqlclient-dev\
+	libunwind8 libunwind-dev\
+	uuid-dev
+
+ENV CC=gcc
+ENV CXX=g++
+
+RUN ${CXX} --version
 
 # build && install current cmake
 RUN ln -s /usr/bin/make /usr/bin/gmake

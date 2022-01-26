@@ -25,7 +25,13 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C718D3B5072E1F5 &&
     libboost-system1.55-dev\
     libunwind8\
     libunwind8-dev\
-    wget
+    wget\
+    uuid-dev
+
+ENV CC=gcc
+ENV CXX=g++
+
+RUN ${CXX} --version
 
 # build && install current cmake
 RUN ln -s /usr/bin/make /usr/bin/gmake
