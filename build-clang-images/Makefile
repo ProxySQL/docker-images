@@ -2,6 +2,10 @@
 NPROCS := $(shell nproc)
 export MAKEFLAGS=-j ${NPROCS}
 
+ifdef SILENT
+override SILENT = >/dev/null
+endif
+
 
 .PHONY: default
 default: build
@@ -25,7 +29,7 @@ build-clang-centos: build-clang-centos8
 .PHONY: build-clang-centos8
 build-clang-centos8:
 	echo 'building build-clang-centos8'
-	docker build --rm --tag proxysql/packaging:build-clang-centos8 build-clang-centos8 > /dev/null
+	docker build --rm --tag proxysql/packaging:build-clang-centos8 build-clang-centos8 ${SILENT}
 	echo 'tagged build-clang-centos8'
 
 
@@ -36,7 +40,7 @@ build-clang-fedora: build-clang-fedora34
 .PHONY: build-clang-fedora34
 build-clang-fedora34:
 	echo 'building build-clang-fedora34'
-	docker build --rm --tag proxysql/packaging:build-clang-fedora34 build-clang-fedora34 > /dev/null
+	docker build --rm --tag proxysql/packaging:build-clang-fedora34 build-clang-fedora34 ${SILENT}
 	echo 'tagged build-clang-fedora34'
 
 
@@ -47,7 +51,7 @@ build-clang-debian: build-clang-debian11
 .PHONY: build-clang-debian11
 build-clang-debian11:
 	echo 'building build-clang-debian11'
-	docker build --rm --tag proxysql/packaging:build-clang-debian11 build-clang-debian11 > /dev/null
+	docker build --rm --tag proxysql/packaging:build-clang-debian11 build-clang-debian11 ${SILENT}
 	echo 'tagged build-clang-debian11'
 
 
@@ -58,7 +62,7 @@ build-clang-ubuntu: build-clang-ubuntu20
 .PHONY: build-clang-ubuntu20
 build-clang-ubuntu20:
 	echo 'building build-clang-ubuntu20'
-	docker build --rm --tag proxysql/packaging:build-clang-ubuntu20 build-clang-ubuntu20 > /dev/null
+	docker build --rm --tag proxysql/packaging:build-clang-ubuntu20 build-clang-ubuntu20 ${SILENT}
 	echo 'tagged build-clang-ubuntu20'
 
 
@@ -69,7 +73,7 @@ build-clang-suse: build-clang-opensuse15
 .PHONY: build-clang-opensuse15
 build-clang-opensuse15:
 	echo 'building build-clang-opensuse15'
-	docker build --rm --tag proxysql/packaging:build-clang-opensuse15 build-clang-opensuse15
+	docker build --rm --tag proxysql/packaging:build-clang-opensuse15 build-clang-opensuse15 ${SILENT}
 	echo 'tagged build-clang-opensuse15'
 
 
