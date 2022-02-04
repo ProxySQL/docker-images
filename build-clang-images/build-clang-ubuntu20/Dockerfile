@@ -12,17 +12,21 @@ RUN apt-get update && apt-get install -y\
 	clang lld\
 	python python3
 
-# libtool needs to installed separately
-# otherwise it pulls in gcc
+# libtool needs to be installed separately
+# depends on c-compiler provided by clang otherwise it pulls in gcc
 RUN apt-get install -y\
 	libtool
+
+# equivs needs to install with --no-install-recommends
+# otherwise it pulls in gcc
+RUN apt-get install -y --no-install-recommends\
+	equivs
 
 # proxysql build dependencies
 RUN apt-get install -y\
 	gnutls-dev libgnutls28-dev libssl-dev\
 	libmysqlclient-dev\
 	libunwind8 libunwind-dev\
-	libboost-all-dev\
 	uuid-dev
 
 RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h

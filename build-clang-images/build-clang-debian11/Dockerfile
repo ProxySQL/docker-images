@@ -10,10 +10,15 @@ RUN apt-get update && apt-get install -y\
 	clang lld\
 	python python3
 
-# libtool needs to installed separately
-# otherwise it pulls in gcc
+# libtool needs to be installed separately
+# depends on c-compiler provided by clang otherwise it pulls in gcc
 RUN apt-get install -y\
 	libtool
+
+# equivs needs to install with --no-install-recommends
+# otherwise it pulls in gcc
+RUN apt-get install -y --no-install-recommends\
+	equivs
 
 # proxysql build dependencies
 RUN apt-get install -y\
