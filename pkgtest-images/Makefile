@@ -8,7 +8,9 @@ endif
 
 
 .PHONY: default
-default: pkgtest
+default:
+	override SILENT = >/dev/null
+	pkgtest
 
 .PHONY: clean
 clean:
@@ -20,7 +22,7 @@ cleanall:
 
 
 .PHONY: pkgtest
-pkgtest: pkgtest-centos pkgtest-fedora pkgtest-debian pkgtest-ubuntu pkgtest-suse
+pkgtest: pkgtest-centos pkgtest-fedora pkgtest-debian pkgtest-ubuntu pkgtest-suse pkgtest-almalinux
 
 
 .SILENT:
@@ -149,6 +151,18 @@ proxysql-pkgtest-opensuse15:
 	echo 'pkgtesting proxysql-pkgtest-opensuse15'
 	docker build --rm --tag proxysql/packaging:pkgtest-opensuse15 proxysql-pkgtest-opensuse15 ${SILENT}
 	echo 'tagged proxysql-pkgtest-opensuse15'
+
+
+.SILENT:
+.PHONY: pkgtest-almalinux
+pkgtest-centos: proxysql-pkgtest-almalinux8
+
+.PHONY: proxysql-pkgtest-almalinux8
+proxysql-pkgtest-almalinux8:
+	echo 'building proxysql-pkgtest-almalinux8'
+	docker build --rm --tag proxysql/packaging:pkgtest-almalinux8 proxysql-pkgtest-almalinux8 ${SILENT}
+	echo 'tagged proxysql-pkgtest-almalinux8'
+
 
 
 .ONESHELL: images

@@ -20,7 +20,7 @@ cleanall:
 
 
 .PHONY: build
-build: build-centos build-fedora build-debian build-ubuntu build-suse
+build: build-centos build-fedora build-debian build-ubuntu build-suse build-almalinux
 
 .SILENT:
 .PHONY: build-centos
@@ -153,6 +153,18 @@ proxysql-build-opensuse15:
 	echo 'building proxysql-build-opensuse15'
 	docker build --rm --tag proxysql/packaging:build-opensuse15 proxysql-build-opensuse15 ${SILENT}
 	echo 'tagged proxysql-build-opensuse15'
+
+
+.SILENT:
+.PHONY: build-almalinux
+build-almalinux: proxysql-build-almalinux8
+
+.PHONY: proxysql-build-almalinux8
+proxysql-build-almalinux8:
+	echo 'building proxysql-build-almalinux8'
+	docker build --rm --tag proxysql/packaging:build-almalinux8 proxysql-build-almalinux8 ${SILENT}
+	echo 'tagged proxysql-build-almalinux8'
+
 
 
 .ONESHELL: images
