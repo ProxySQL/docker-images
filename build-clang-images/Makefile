@@ -20,7 +20,7 @@ cleanall:
 
 
 .PHONY: build
-build: build-clang-centos build-clang-fedora build-clang-debian build-clang-ubuntu build-clang-suse
+build: build-clang-centos build-clang-fedora build-clang-debian build-clang-ubuntu build-clang-suse build-clang-almalinux
 
 .SILENT:
 .PHONY: build-clang-centos
@@ -75,6 +75,18 @@ build-clang-opensuse15:
 	echo 'building build-clang-opensuse15'
 	docker build --rm --tag proxysql/packaging:build-clang-opensuse15 build-clang-opensuse15 ${SILENT}
 	echo 'tagged build-clang-opensuse15'
+
+
+.SILENT:
+.PHONY: build-clang-almalinux
+build-clang-almalinux: build-clang-almalinux8
+
+.PHONY: build-clang-almalinux8
+build-clang-almalinux8:
+	echo 'building build-clang-almalinux8'
+	docker build --rm --tag proxysql/packaging:build-clang-almalinux8 build-clang-almalinux8 ${SILENT}
+	echo 'tagged build-clang-almalinux8'
+
 
 
 .ONESHELL: images
