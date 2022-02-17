@@ -40,9 +40,9 @@ Install BunildX plugin for Docker
 - https://github.com/docker/buildx/releases
 
 ```
-    mkdir -p ~/.docker/cli-plugins/
-    wget -O ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64
-    chmod a+x ~/.docker/cli-plugins/docker-buildx
+mkdir -p ~/.docker/cli-plugins/
+wget -O ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64
+chmod a+x ~/.docker/cli-plugins/docker-buildx
 ```
 
 Bootstrap BuildX
