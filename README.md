@@ -35,7 +35,11 @@ e.g:
 Install docker from upstream
 - https://docs.docker.com/engine/install/
 
-Install BunildX plugin for Docker
+Qemu is required for non-native arch image builds
+
+    apt-get install qemu-system-arm
+
+Install BuildX plugin for Docker
 - https://github.com/docker/buildx#linux-packages
 - https://github.com/docker/buildx/releases
 
