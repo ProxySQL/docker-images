@@ -29,3 +29,9 @@ e.g:
     # cd build-images
     # make clean
     # make proxysql-build-debian11
+
+
+#### More...
+- install buildx https://docs.docker.com/buildx/working-with-buildx/#linux-packages
+- buildx multiarch https://docs.docker.com/desktop/multi-arch/
+- multiarch build cluster https://fy.blackhats.net.au/blog/html/2020/08/06/docker_buildx_for_multiarch_builds.html
