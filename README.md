@@ -1,7 +1,7 @@
 # Docker images for building ProxySQL
 
 Images can be found at:
-https://hub.docker.com/r/renecannao/proxysql/
+https://hub.docker.com/repository/docker/proxysql/packaging
 
 #### build-images
 - used for building of proxysql packages
