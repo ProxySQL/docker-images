@@ -1,10 +1,21 @@
 FROM centos:centos7
 MAINTAINER Miro Stauder <miro@sysown.com>
 
+RUN cat /etc/redhat-release >&2
+
 # fix keys
 RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
-RUN yum update -y
+# fix repos
+#RUN sed -i 's/mirrorlist/#mirrorlist/' /etc/yum.repos.d/CentOS-*.repo
+#RUN sed -i 's/#baseurl/baseurl/' /etc/yum.repos.d/CentOS-*.repo
+#RUN sed -i 's/mirror./vault./' /etc/yum.repos.d/CentOS-*.repo
+
+# install epel
+RUN yum -y install epel-release
+RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+
+RUN yum -y update
 
 # gcc & build tools
 RUN yum install -y\
