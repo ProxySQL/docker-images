@@ -22,13 +22,22 @@ https://hub.docker.com/repository/docker/proxysql/packaging
 - based on upstream images
 - added runtime dependencies
 
-#### HowTo
-run make inside of one of the folders to build images,
-e.g:
+#### HowTo native-arch
+run make inside of one of the folders to build native image,
+e.g.:
 
     # cd build-images
     # make clean
-    # make proxysql-build-debian11
+    # make [target]
+
+#### HowTo multi-arch
+run make inside of one of the folders to build multi-arch images,
+supported architectures are amd64 and arm64.
+e.g.:
+
+    # cd build-images
+    # make clean
+    # make -f Makefile.multiarch [target]
 
 #### Setup Docker for multiarch
 
