@@ -1,3 +1,4 @@
+#!/usr/bin/make -f
 
 NPROCS := $(shell nproc)
 export MAKEFLAGS=-j ${NPROCS}
@@ -8,7 +9,7 @@ endif
 
 
 .PHONY: default
-default: build
+default: build-clang
 
 .PHONY: clean
 clean:
@@ -19,8 +20,9 @@ cleanall:
 	docker system prune -a
 
 
-.PHONY: build
-build: build-clang-centos build-clang-fedora build-clang-debian build-clang-ubuntu build-clang-suse build-clang-almalinux
+.PHONY: build-clang
+build: build-clang-centos build-clang-fedora build-clang-debian build-clang-ubuntu build-clang-opensuse build-clang-almalinux
+
 
 .SILENT:
 .PHONY: build-clang-centos
@@ -67,8 +69,8 @@ build-clang-ubuntu20:
 
 
 .SILENT:
-.PHONY: build-clang-suse
-build-clang-suse: build-clang-opensuse15
+.PHONY: build-clang-opensuse
+build-clang-opensuse: build-clang-opensuse15
 
 .PHONY: build-clang-opensuse15
 build-clang-opensuse15:
