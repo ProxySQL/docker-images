@@ -54,7 +54,7 @@ pkgtest-almalinux:
 pkgtest-*:
 	echo 'building $@'
 	# try building both amd64 and arm64, fallback to amd64
-	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/arm64,linux/amd64 $@ --push ${SILENT} || \
+	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/arm64/v8,linux/amd64 $@ --push ${SILENT} || \
 	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/amd64 $@ --push ${SILENT}
 	echo 'tagged $@'
 
