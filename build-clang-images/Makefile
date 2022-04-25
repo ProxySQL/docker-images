@@ -4,7 +4,7 @@ NPROCS := $(shell nproc)
 export MAKEFLAGS=-j ${NPROCS}
 
 ifdef SILENT
-override SILENT = >/dev/null
+override SILENT=-q
 endif
 
 
@@ -21,73 +21,40 @@ cleanall:
 
 
 .PHONY: build-clang
-build: build-clang-centos build-clang-fedora build-clang-debian build-clang-ubuntu build-clang-opensuse build-clang-almalinux
+build-clang: $(wildcard build-clang*)
 
 
-.SILENT:
 .PHONY: build-clang-centos
-build-clang-centos: build-clang-centos8
+build-clang-centos:
+	make $(wildcard build-clang-centos*)
 
-.PHONY: build-clang-centos8
-build-clang-centos8:
-	echo 'building build-clang-centos8'
-	docker build --rm --tag proxysql/packaging:build-clang-centos8 build-clang-centos8 ${SILENT}
-	echo 'tagged build-clang-centos8'
-
-
-.SILENT:
 .PHONY: build-clang-fedora
-build-clang-fedora: build-clang-fedora34
+build-clang-fedora:
+	make $(wildcard build-clang-fedora*)
 
-.PHONY: build-clang-fedora34
-build-clang-fedora34:
-	echo 'building build-clang-fedora34'
-	docker build --rm --tag proxysql/packaging:build-clang-fedora34 build-clang-fedora34 ${SILENT}
-	echo 'tagged build-clang-fedora34'
-
-
-.SILENT:
 .PHONY: build-clang-debian
-build-clang-debian: build-clang-debian11
+build-clang-debian:
+	make $(wildcard build-clang-debian*)
 
-.PHONY: build-clang-debian11
-build-clang-debian11:
-	echo 'building build-clang-debian11'
-	docker build --rm --tag proxysql/packaging:build-clang-debian11 build-clang-debian11 ${SILENT}
-	echo 'tagged build-clang-debian11'
-
-
-.SILENT:
 .PHONY: build-clang-ubuntu
-build-clang-ubuntu: build-clang-ubuntu20
+build-clang-ubuntu:
+	make $(wildcard build-clang-ubuntu*)
 
-.PHONY: build-clang-ubuntu20
-build-clang-ubuntu20:
-	echo 'building build-clang-ubuntu20'
-	docker build --rm --tag proxysql/packaging:build-clang-ubuntu20 build-clang-ubuntu20 ${SILENT}
-	echo 'tagged build-clang-ubuntu20'
-
-
-.SILENT:
 .PHONY: build-clang-opensuse
-build-clang-opensuse: build-clang-opensuse15
+build-clang-opensuse:
+	make $(wildcard build-clang-opensuse*)
 
-.PHONY: build-clang-opensuse15
-build-clang-opensuse15:
-	echo 'building build-clang-opensuse15'
-	docker build --rm --tag proxysql/packaging:build-clang-opensuse15 build-clang-opensuse15 ${SILENT}
-	echo 'tagged build-clang-opensuse15'
+.PHONY: build-clang-almalinux
+build-clang-almalinux:
+	make $(wildcard build-clang-almalinux*)
 
 
 .SILENT:
-.PHONY: build-clang-almalinux
-build-clang-almalinux: build-clang-almalinux8
-
-.PHONY: build-clang-almalinux8
-build-clang-almalinux8:
-	echo 'building build-clang-almalinux8'
-	docker build --rm --tag proxysql/packaging:build-clang-almalinux8 build-clang-almalinux8 ${SILENT}
-	echo 'tagged build-clang-almalinux8'
+.PHONY: build-clang-*
+build-clang-*:
+	echo 'building $@'
+	docker build --rm --tag proxysql/packaging:$@ $@ ${SILENT}
+	echo 'tagged $@'
 
 
 
