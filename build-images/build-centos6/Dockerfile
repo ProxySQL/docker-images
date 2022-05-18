@@ -40,6 +40,10 @@ RUN echo "export CXX=/opt/rh/devtoolset-2/root/usr/bin/c++" >> /root/.bashrc
 RUN yum -y install http://repo.okay.com.mx/centos/6/x86_64/release/okay-release-1-1.noarch.rpm
 RUN yum -y install automake autoconf
 
+# debug images need valgrind
+RUN yum install -y \
+	valgrind valgrind-devel
+
 ENV CC=gcc
 ENV CXX=g++
 

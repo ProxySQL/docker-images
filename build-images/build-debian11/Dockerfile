@@ -20,6 +20,10 @@ RUN apt-get install -y\
 	libunwind8 libunwind-dev\
 	uuid-dev
 
+# debug images need valgrind
+RUN apt-get update && apt-get install -y \
+	valgrind
+
 ENV CC=gcc
 ENV CXX=g++
 

@@ -19,6 +19,10 @@ RUN dnf install -y\
 	perl-IPC-Cmd\
 	libuuid-devel
 
+# debug images need valgrind
+RUN yum install -y \
+	valgrind valgrind-devel
+
 ENV CC=gcc
 ENV CXX=g++
 

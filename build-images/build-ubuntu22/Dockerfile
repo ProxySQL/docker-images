@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y\
 	gdb gdbserver\
 	equivs\
 	python3 \
-    zstd
+	zstd
 
 # proxysql build dependencies
 RUN apt-get install -y\
@@ -23,6 +23,10 @@ RUN apt-get install -y\
 	libboost-all-dev\
 	libunwind8 libunwind-dev\
 	uuid-dev
+
+# debug images need valgrind
+RUN apt-get update && apt-get install -y \
+	valgrind
 
 ENV CC=gcc
 ENV CXX=g++

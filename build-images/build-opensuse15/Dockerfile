@@ -27,6 +27,10 @@ RUN zypper install -y\
 #RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 #RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
 
+# debug images need valgrind
+RUN zypper install -y \
+	valgrind valgrind-devel
+
 ENV CC=gcc
 ENV CXX=g++
 
