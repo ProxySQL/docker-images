@@ -13,7 +13,7 @@ default: pkgtest
 
 .PHONY: clean
 clean:
-	docker images -a | grep "proxysql/packaging" | awk '{print $3}' | xargs -r 'docker rmi | grep "proxysql/packaging"'
+	docker images -a | grep "proxysql/packaging" | grep "pkgtest-" | awk '{print $$3}' | sort | uniq | xargs -r docker rmi -f
 
 .PHONY: cleanall
 cleanall:

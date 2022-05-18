@@ -13,7 +13,7 @@ default: build
 
 .PHONY: clean
 clean:
-	docker images -a | grep "proxysql/packaging" | awk '{print $3}' | xargs -r 'docker rmi | grep "proxysql/packaging"'
+	docker images -a | grep "proxysql/packaging" | grep "build-" | grep -v "-clang-" | awk '{print $$3}' | sort | uniq | xargs -r docker rmi -f
 
 .PHONY: cleanall
 cleanall:
@@ -54,7 +54,7 @@ build-almalinux:
 build-*:
 	echo 'building $@'
 	# try building both amd64 and arm64, fallback to amd64
-	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/arm64,linux/amd64 $@ --push ${SILENT} || \
+	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/arm64/v8,linux/amd64 $@ --push ${SILENT} || \
 	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/amd64 $@ --push ${SILENT}
 	echo 'tagged $@'
 
