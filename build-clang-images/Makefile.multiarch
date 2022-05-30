@@ -53,9 +53,9 @@ build-clang-almalinux:
 .PHONY: build-clang-*
 build-clang-*:
 	echo 'building $@'
-	# try building both amd64 and arm64, fallback to amd64
+	# try building both amd64 and arm64, fallback to native
 	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/arm64/v8,linux/amd64 $@ --push ${SILENT} || \
-	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/amd64 $@ --push ${SILENT}
+	docker buildx build -t proxysql/packaging:$@ --pull $@ --push ${SILENT}
 	echo 'tagged $@'
 
 
