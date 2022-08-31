@@ -9,12 +9,12 @@ RUN dnf install epel-release -y && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPE
 # clang & build tools
 RUN dnf install -y\
 	make cmake automake\
-	git patch\
+	git patch which\
 	bzip2 tar wget
 
 # try avoiding pulling gcc as dependency
 RUN dnf install -y --setopt=install_weak_deps=False --best\
-	clang lld\
+	clang lld compiler-rt\
 	rpm-build\
 	python2 python3\
 	libtool

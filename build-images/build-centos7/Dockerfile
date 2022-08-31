@@ -20,7 +20,7 @@ RUN yum -y update
 # gcc & build tools
 RUN yum install -y\
 	make automake\
-	git patch\
+	git patch which\
 	bzip2 tar wget\
 	gcc gcc-c++\
 	libtool\

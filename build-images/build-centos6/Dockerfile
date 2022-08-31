@@ -21,7 +21,7 @@ RUN yum -y install yum-plugin-ovl yum-utils
 RUN yum -y install\
 	make rpm-build\
 	bzip2 tar wget\
-	git patch\
+	git patch which\
 	openssl openssl-devel\
 	gnutls libgnutls gnutls-devel\
 	libtool\
