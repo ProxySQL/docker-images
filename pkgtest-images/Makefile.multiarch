@@ -7,6 +7,10 @@ ifdef SILENT
 override SILENT=-q
 endif
 
+ifdef NOCACHE
+override NOCACHE=--no-cache
+endif
+
 
 .PHONY: default
 default: pkgtest
@@ -25,42 +29,40 @@ pkgtest: $(wildcard pkgtest-*)
 
 
 .PHONY: pkgtest-centos
-pkgtest-centos:
-	make $(wildcard pkgtest-centos*)
+pkgtest-centos: $(wildcard pkgtest-centos*)
 
 .PHONY: pkgtest-fedora
-pkgtest-fedora:
-	make $(wildcard pkgtest-fedora*)
+pkgtest-fedora: $(wildcard pkgtest-fedora*)
 
 .PHONY: pkgtest-debian
-pkgtest-debian:
-	make $(wildcard pkgtest-debian*)
+pkgtest-debian: $(wildcard pkgtest-debian*)
 
 .PHONY: pkgtest-ubuntu
-pkgtest-ubuntu:
-	make $(wildcard pkgtest-ubuntu*)
+pkgtest-ubuntu: $(wildcard pkgtest-ubuntu*)
 
 .PHONY: pkgtest-opensuse
-pkgtest-opensuse:
-	make $(wildcard pkgtest-opensuse*)
+pkgtest-opensuse: $(wildcard pkgtest-opensuse*)
 
 .PHONY: pkgtest-almalinux
-pkgtest-almalinux:
-	make $(wildcard pkgtest-almalinux*)
+pkgtest-almalinux: $(wildcard pkgtest-almalinux*)
 
 
-.SILENT:
+NOARM64 := pkgtest-centos6 pkgtest-ubuntu14
+PLTFRMS := linux/arm64/v8 linux/amd64
+
+#.SILENT: pkgtest-*
 .PHONY: pkgtest-*
+.NOTPARALLEL: pkgtest-*
+pkgtest-*: BLD_PLTFRMS=$(if $(findstring $@, $(NOARM64)),$(filter-out linux/arm64%,$(PLTFRMS)),$(PLTFRMS))
+pkgtest-*: ARG_PLTFRMS=$(subst $() ,$(shell echo ,),$(BLD_PLTFRMS))
 pkgtest-*:
-	echo 'building $@'
-	# try building both amd64 and arm64, fallback to native
-	docker buildx build -t proxysql/packaging:$@ --pull --platform linux/arm64/v8,linux/amd64 $@ --push ${SILENT} || \
-	docker buildx build -t proxysql/packaging:$@ --pull $@ --push ${SILENT}
-	echo 'tagged $@'
+	@echo "building $@ for '$(ARG_PLTFRMS)'"
+	@# try building, fallback to native
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ --pull --platform $(ARG_PLTFRMS) $@ --push ${SILENT} || \
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ --pull $@ --push ${SILENT}
+	@echo 'tagged $@'
 
 
-
-.ONESHELL: images
 images:
-	echo 'Finished building'
+	@echo "Available 'proxysql/packaging' images:"
 	docker images | grep "proxysql/packaging"
