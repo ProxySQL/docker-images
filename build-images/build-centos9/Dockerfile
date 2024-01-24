@@ -28,6 +28,9 @@ RUN yum install -y \
 RUN yum install -y \
 	valgrind valgrind-devel
 
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
+
 ENV CC=gcc
 ENV CXX=g++
 

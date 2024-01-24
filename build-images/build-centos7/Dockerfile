@@ -39,6 +39,14 @@ RUN yum install -y\
 RUN yum install -y \
 	valgrind valgrind-devel
 
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
+
+# we need gcc8 for new clickhouse
+#RUN yum install -y centos-release-scl && \
+#	yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ && \
+#	echo 'source scl_source enable devtoolset-8' >> /etc/bashrc
+
 ENV CC=gcc
 ENV CXX=g++
 

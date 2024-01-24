@@ -12,7 +12,7 @@ RUN dnf install -y \
 
 # try avoiding pulling gcc as dependency
 RUN dnf install -y --setopt=install_weak_deps=False --best \
-	clang lld \
+	clang lld compiler-rt \
 	rpm-build \
 	python3 \
 	libtool
@@ -29,6 +29,9 @@ RUN yum install -y \
 	perl-FindBin \
 	libuuid-devel \
 	zlib-devel
+
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
 
 ENV CC=clang
 ENV CXX=clang++

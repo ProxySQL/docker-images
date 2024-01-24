@@ -13,19 +13,25 @@ RUN apt-get update && apt-get install -y\
 	libtool\
 	gdb gdbserver\
 	equivs\
-	python python3
+	python python3 \
+	zstd \
+	pkg-config
 
 # proxysql build dependencies
-RUN apt-get install -y\
-	libssl-dev gnutls-dev libgnutls28-dev\
-	libmysqlclient-dev\
-	libboost-all-dev\
-	libunwind8 libunwind-dev\
-	uuid-dev
+RUN apt-get install -y \
+	libssl-dev gnutls-dev libgnutls28-dev \
+	libmysqlclient-dev \
+	libboost-all-dev \
+	libunwind8 libunwind-dev \
+	uuid-dev \
+	libncurses-dev
 
 # debug images need valgrind
 RUN apt-get update && apt-get install -y \
 	valgrind
+
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
 
 ENV CC=gcc
 ENV CXX=g++

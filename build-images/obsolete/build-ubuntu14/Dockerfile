@@ -1,24 +1,31 @@
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 MAINTAINER Miro Stauder <miro@sysown.com>
 
 RUN chmod 777 /tmp
-
-# gcc & build tools
-RUN apt-get update && apt-get install -y\
-	make automake\
-	git wget\
-	gcc g++\
-	libtool\
-	gdb gdbserver\
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C718D3B5072E1F5 && \
+	echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-apt-config' > /etc/apt/sources.list.d/mysql.list && \
+	echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7' >> /etc/apt/sources.list.d/mysql.list && \
+	echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-tools' >> /etc/apt/sources.list.d/mysql.list && \
+	apt-get update && apt-get install -y --force-yes\
+	automake\
+	cmake3\
 	equivs\
-	python python3
-
-# proxysql build dependencies
-RUN apt-get install -y\
-	libssl-dev gnutls-dev libgnutls28-dev\
+	make\
+	g++\
+	gcc\
+	gdb\
+	gdbserver\
+	git\
+	python python3\
+	libgnutls28-dev\
 	libmysqlclient-dev\
-	libboost1.58-all-dev\
-	libunwind8 libunwind-dev\
+	libssl-dev\
+	libtool\
+	libboost1.55-all-dev\
+	libboost-system1.55-dev\
+	libunwind8\
+	libunwind8-dev\
+	wget\
 	uuid-dev
 
 # debug images need valgrind
@@ -27,15 +34,6 @@ RUN apt-get update && apt-get install -y \
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'
-
-# we need gcc8 for new clickhouse
-#RUN apt-get update -y && \
-#	apt-get install build-essential software-properties-common -y && \
-#	add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
-#	apt-get update -y && \
-#	apt-get install gcc-8 g++-8 -y && \
-#	update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-8
-
 
 ENV CC=gcc
 ENV CXX=g++

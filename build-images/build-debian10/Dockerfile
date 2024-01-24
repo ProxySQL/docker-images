@@ -24,6 +24,9 @@ RUN apt-get install -y\
 RUN apt-get update && apt-get install -y \
 	valgrind
 
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
+
 ENV CC=gcc
 ENV CXX=g++
 

@@ -1,4 +1,4 @@
-FROM fedora:38
+FROM fedora:36
 MAINTAINER Miro Stauder <miro@sysown.com>
 
 # clang & build tools

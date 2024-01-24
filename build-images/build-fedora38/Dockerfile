@@ -25,6 +25,9 @@ RUN dnf install -y \
 RUN dnf install -y \
 	valgrind valgrind-devel
 
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
+
 ENV CC=gcc
 ENV CXX=g++
 

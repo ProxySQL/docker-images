@@ -32,6 +32,9 @@ RUN apt-get install -y\
 
 RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
 
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
+
 ENV CC=clang
 ENV CXX=clang++
 

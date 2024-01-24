@@ -24,6 +24,9 @@ RUN dnf install -y\
 	perl-IPC-Cmd\
 	libuuid-devel
 
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
+
 ENV CC=clang
 ENV CXX=clang++
 

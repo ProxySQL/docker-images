@@ -18,28 +18,31 @@ RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
 RUN yum -y update
 
 # clang & build tools
-RUN dnf install -y\
-	make cmake automake\
-	git patch which\
+RUN dnf install -y \
+	make cmake automake \
+	git patch which \
 	bzip2 tar wget
 
 # try avoiding pulling gcc as dependency
-RUN dnf install -y --setopt=install_weak_deps=False --best\
-	clang lld compiler-rt\
-	rpm-build\
-	python2 python3\
+RUN dnf install -y --setopt=install_weak_deps=False --best \
+	clang lld compiler-rt \
+	rpm-build \
+	python2 python3 \
 	libtool
 
 #RUN clang --version
 #RUN gcc --version
 
 # proxysql build dependencies
-RUN yum install -y\
-	openssl openssl-devel\
-	gnutls gnutls-devel\
-	libunwind libunwind-devel\
-	perl-IPC-Cmd\
+RUN yum install -y \
+	openssl openssl-devel \
+	gnutls gnutls-devel \
+	libunwind libunwind-devel \
+	perl-IPC-Cmd \
 	libuuid-devel
+
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
 
 ENV CC=clang
 ENV CXX=clang++

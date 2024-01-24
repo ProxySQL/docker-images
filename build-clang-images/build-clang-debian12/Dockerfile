@@ -27,6 +27,9 @@ RUN apt-get install -y\
 	libunwind8 libunwind-dev\
 	uuid-dev
 
+# configure git safe dir
+RUN git config --global --add safe.directory '*'
+
 ENV CC=clang
 ENV CXX=clang++
 

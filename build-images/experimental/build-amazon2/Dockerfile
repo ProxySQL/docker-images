@@ -1,20 +1,31 @@
-FROM almalinux:8
+FROM amazonlinux:2
 MAINTAINER Miro Stauder <miro@sysown.com>
+
+RUN cat /etc/os-release >&2
 
 # fix keys
 #RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
-# install from epel
-RUN dnf install epel-release -y && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+
+# fix repos
+#RUN sed -i 's/mirrorlist/#mirrorlist/' /etc/yum.repos.d/CentOS-*.repo
+#RUN sed -i 's/#baseurl/baseurl/' /etc/yum.repos.d/CentOS-*.repo
+#RUN sed -i 's/mirror./vault./' /etc/yum.repos.d/CentOS-*.repo
+
+# install epel
+#RUN yum -y install epel-release
+#RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+
+RUN yum -y update
 
 # gcc & build tools
 RUN yum install -y\
 	make automake\
-	git patch\
+	git patch which\
 	bzip2 tar wget\
 	gcc gcc-c++\
 	libtool\
 	rpm-build\
-	python2 python3
+	python3
 
 # proxysql build dependencies
 RUN yum install -y\

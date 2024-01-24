@@ -1,41 +1,40 @@
-FROM ubuntu:20.04
+FROM debian:8
 MAINTAINER Miro Stauder <miro@sysown.com>
 
 RUN chmod 777 /tmp
-ENV TZ=UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# clang & build tools
+# fix repos
+RUN sed -i '/jessie-updates/d' /etc/apt/sources.list; \
+	sed -i 's/deb.debian/archive.debian/' /etc/apt/sources.list; \
+	sed -i 's/security.debian/archive.debian/' /etc/apt/sources.list; \
+	sed -i 's/deb /deb [trusted=yes] /' /etc/apt/sources.list
+
+# gcc & build tools
 RUN apt-get update && apt-get install -y\
 	make automake\
 	git wget\
-	clang lld\
+	gcc g++\
+	libtool\
+	gdb gdbserver\
+	equivs\
 	python python3
-
-# libtool needs to be installed separately
-# depends on c-compiler provided by clang otherwise it pulls in gcc
-RUN apt-get install -y\
-	libtool
-
-# equivs needs to install with --no-install-recommends
-# otherwise it pulls in gcc
-RUN apt-get install -y --no-install-recommends\
-	equivs
 
 # proxysql build dependencies
 RUN apt-get install -y\
-	gnutls-dev libgnutls28-dev libssl-dev\
+	libssl-dev gnutls-dev libgnutls28-dev\
 	libmysqlclient-dev\
 	libunwind8 libunwind-dev\
 	uuid-dev
 
-RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
+# debug images need valgrind
+RUN apt-get update && apt-get install -y \
+	valgrind
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'
 
-ENV CC=clang
-ENV CXX=clang++
+ENV CC=gcc
+ENV CXX=g++
 
 RUN ${CXX} --version
 

@@ -1,28 +1,28 @@
-FROM fedora:39
+FROM fedora:33
 MAINTAINER Miro Stauder <miro@sysown.com>
 
 # gcc & build tools
-RUN dnf install -y \
-	make automake \
-	git patch \
-	bzip2 tar wget \
-	gcc gcc-c++ \
-	libtool \
-	rpm-build \
+RUN dnf install -y\
+	make automake\
+	git patch\
+	bzip2 tar wget\
+	gcc gcc-c++\
+	libtool\
+	rpm-build\
 	python2 python3
 
 # proxysql build dependencies
-RUN dnf install -y \
-	openssl openssl-devel \
-	gnutls gnutls-devel \
-	libunwind libunwind-devel \
-	zlib-devel \
-	perl-FindBin \
-	perl-IPC-Cmd \
+RUN dnf install -y\
+	openssl openssl-devel\
+	gnutls gnutls-devel\
+	libunwind libunwind-devel\
+	zlib-devel\
+	perl-FindBin\
+	perl-IPC-Cmd\
 	libuuid-devel
 
 # debug images need valgrind
-RUN dnf install -y \
+RUN yum install -y \
 	valgrind valgrind-devel
 
 # configure git safe dir
