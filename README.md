@@ -1,7 +1,8 @@
-# Docker images for building ProxySQL
+# Docker images for building and running ProxySQL
 
 Images can be found at:
-https://hub.docker.com/repository/docker/proxysql/packaging
+- https://hub.docker.com/repository/docker/proxysql/packaging
+- https://hub.docker.com/repository/docker/proxysql/proxysql
 
 #### build-images
 - used for building of proxysql packages
@@ -22,7 +23,12 @@ https://hub.docker.com/repository/docker/proxysql/packaging
 - based on upstream images
 - added runtime dependencies
 
-#### HowTo native-arch
+#### proxysql-images
+- proxysql prebuild image
+
+---
+### How to build images
+#### Native-arch
 run make inside of one of the folders to build native image,
 e.g.:
 
@@ -30,7 +36,7 @@ e.g.:
     # make clean
     # make [target]
 
-#### HowTo multi-arch
+#### Multi-arch
 run make inside of one of the folders to build multi-arch images,
 supported architectures are amd64 and arm64.
 e.g.:
@@ -39,16 +45,23 @@ e.g.:
     # make clean
     # make -f Makefile.multiarch [target]
 
-#### Setup Docker for multiarch
+---
+### Setup Docker for multiarch
 
-Install docker from upstream
+> [!NOTE]
+> Using buildx with Docker requires Docker engine 19.03 or newer
+
+Install docker from upstream 
 - https://docs.docker.com/engine/install/
 
-Qemu is required for non-native arch image builds
+Qemu is required for multiarch local builds
 
     apt-get install qemu-system-arm
 
-Install BuildX plugin for Docker
+> [!NOTE]
+> since v23, BuildX is packaged and will be installed if you followed instructions above
+
+Alternative install BuildX plugin for Docker from GitHub
 - https://github.com/docker/buildx#linux-packages
 - https://github.com/docker/buildx/releases
 
@@ -58,23 +71,29 @@ wget -O ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/rel
 chmod a+x ~/.docker/cli-plugins/docker-buildx
 ```
 
-Bootstrap BuildX
+Bootstrap BuildX for local multiarch using qemu
 
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     docker buildx create --name multiarch --driver docker-container --use
     docker buildx inspect --bootstrap
 
-Run image build
+---
+### Inner workings
 
+Runing image build
+```
     docker buildx build -t proxysql/packaging:build-debian11 --platform linux/arm64,linux/amd64 proxysql-build-debian11
-
-Upload finished build
-
+```
+Uploading finished build
+```
     docker credentials
     docker buildx build -t proxysql/packaging:build-debian11 --platform linux/arm64,linux/amd64 proxysql-build-debian11 --push
+```
 
-#### Resources...
+---
+### Resources...
 - install buildx https://docs.docker.com/buildx/working-with-buildx/#linux-packages
 - buildx multiarch https://docs.docker.com/desktop/multi-arch/
-- multiarch build cluster https://fy.blackhats.net.au/blog/html/2020/08/06/docker_buildx_for_multiarch_builds.html
+- multiarch build tcp cluster https://fy.blackhats.net.au/blog/html/2020/08/06/docker_buildx_for_multiarch_builds.html
+- multiarch build ssh remotes https://dev.to/aboozar/build-docker-multi-platform-image-using-buildx-remote-builder-node-5631
 - issues https://github.com/docker/buildx/issues/495
