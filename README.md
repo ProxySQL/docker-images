@@ -32,44 +32,32 @@ Images can be found at:
 run make inside of one of the folders to build native image,
 e.g.:
 
-    # cd build-images
-    # make clean
-    # make [target]
+    cd build-images
+    make clean
+    make [target]
 
 #### Multi-arch
 run make inside of one of the folders to build multi-arch images,
 supported architectures are amd64 and arm64.
 e.g.:
 
-    # cd build-images
-    # make clean
-    # make -f Makefile.multiarch [target]
+    cd build-images
+    make clean
+    make -f Makefile.multiarch [target]
 
 ---
-### Setup Docker for multiarch
+### Setup Docker for local multiarch via Qemu
 
 > [!NOTE]
-> Using buildx with Docker requires Docker engine 19.03 or newer
+> - Using buildx with Docker requires Docker engine 19.03 or newer
+> - since Docker v23, BuildX is packaged and will be installed if you install from upstream
 
 Install docker from upstream 
 - https://docs.docker.com/engine/install/
 
 Qemu is required for multiarch local builds
 
-    apt-get install qemu-system-arm
-
-> [!NOTE]
-> since v23, BuildX is packaged and will be installed if you followed instructions above
-
-Alternative install BuildX plugin for Docker from GitHub
-- https://github.com/docker/buildx#linux-packages
-- https://github.com/docker/buildx/releases
-
-```
-mkdir -p ~/.docker/cli-plugins/
-wget -O ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64
-chmod a+x ~/.docker/cli-plugins/docker-buildx
-```
+    apt-get install --no-install-recommends qemu-system-arm
 
 Bootstrap BuildX for local multiarch using qemu
 
@@ -78,17 +66,27 @@ Bootstrap BuildX for local multiarch using qemu
     docker buildx inspect --bootstrap
 
 ---
+### Setup Docker for distributed native multiarch
+
+> [!NOTE]
+> - This requires native hosts for buidling respective arch
+
+    docker buildx create --name distarch --driver docker-container --use
+
+TODO
+
+---
 ### Inner workings
 
 Runing image build
-```
+
     docker buildx build -t proxysql/packaging:build-debian11 --platform linux/arm64,linux/amd64 proxysql-build-debian11
-```
+
 Uploading finished build
-```
+
     docker credentials
     docker buildx build -t proxysql/packaging:build-debian11 --platform linux/arm64,linux/amd64 proxysql-build-debian11 --push
-```
+
 
 ---
 ### Resources...
