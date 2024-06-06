@@ -2,6 +2,8 @@
 
 NPROCS := $(shell nproc)
 export MAKEFLAGS=-j ${NPROCS}
+MULTIARCH ?=1
+PUSH ?= --push
 
 ifdef SILENT
 override SILENT=-q
@@ -9,6 +11,14 @@ endif
 
 ifdef NOCACHE
 override NOCACHE=--no-cache
+endif
+
+ifdef NOMULTIARCH
+override undefine MULTIARCH
+endif
+
+ifdef NOPUSH
+override undefine PUSH
 endif
 
 ifndef VERS
@@ -58,8 +68,8 @@ ifndef MULTIARCH
 endif
 ifdef MULTIARCH
 	@# try building, fallback to native
-	docker buildx build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull --platform $(ARG_PLTFRMS) $@ --push ${SILENT} || \
-	docker buildx build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull $@ --push ${SILENT}
+	docker buildx build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT} || \
+	docker buildx build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull $@ ${PUSH} ${SILENT}
 endif
 	@echo 'tagged $@'
 
