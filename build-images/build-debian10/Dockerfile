@@ -18,7 +18,9 @@ RUN apt-get install -y\
 	libssl-dev gnutls-dev libgnutls28-dev\
 	libmariadbclient-dev\
 	libunwind8 libunwind-dev\
-	uuid-dev
+	uuid-dev \
+	libicu-dev \
+	libevent-dev
 
 # debug images need valgrind
 RUN apt-get update && apt-get install -y \

@@ -20,7 +20,9 @@ RUN apt-get install -y \
 	libmariadb-dev \
 	libunwind8 libunwind-dev \
 	uuid-dev \
-	libncurses-dev
+	libncurses-dev \
+	libicu-dev \
+	libevent-dev
 
 # debug images need valgrind
 RUN apt-get update && apt-get install -y \
