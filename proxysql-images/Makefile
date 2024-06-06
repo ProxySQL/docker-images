@@ -51,7 +51,7 @@ proxysql-*: TAGD=$(shell echo "-t proxysql/proxysql:${VERS}-${DIST}")
 proxysql-*: TAGL=$(shell echo "-t proxysql/proxysql:latest-${DIST}")
 proxysql-*: TAGP=$(if $(findstring $(DFLTDST),$@), $(shell echo "-t proxysql/proxysql:latest"),)
 proxysql-*:
-	@echo "building $@ for '$(ARG_PLTFRMS)'"
+	@echo "building v$(VERS) of $@ for '$(ARG_PLTFRMS)'"
 ifndef MULTIARCH
 	@# build native only
 	docker build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull $@ ${SILENT}
