@@ -17,7 +17,7 @@ default: build
 
 .PHONY: clean
 clean:
-	docker images -a | grep "proxysql/packaging" | grep "build-" | grep -v "-clang-" | awk '{print $$3}' | sort | uniq | xargs -r docker rmi -f
+	docker images -a | grep "proxysql/packaging" | grep "build-" | grep -v "build-clang-" | awk '{print $$3}' | sort | uniq | xargs -r docker rmi -f
 
 .PHONY: cleanall
 cleanall:
