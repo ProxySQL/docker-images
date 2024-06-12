@@ -9,7 +9,8 @@ RUN dnf install -y \
 	gcc gcc-c++ \
 	libtool \
 	rpm-build \
-	python2 python3
+	python3 \
+	pkg-config
 
 # proxysql build dependencies
 RUN dnf install -y \
@@ -19,7 +20,10 @@ RUN dnf install -y \
 	zlib-devel \
 	perl-FindBin \
 	perl-IPC-Cmd \
-	libuuid-devel
+	libuuid-devel \
+	libicu-devel \
+	libevent-devel
+
 
 # debug images need valgrind
 RUN dnf install -y \

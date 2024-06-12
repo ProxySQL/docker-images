@@ -12,7 +12,8 @@ RUN yum install -y \
 	gcc gcc-c++ \
 	libtool \
 	rpm-build \
-	python3
+	python3 \
+	pkg-config
 
 # proxysql build dependencies
 RUN yum install -y \
@@ -22,7 +23,10 @@ RUN yum install -y \
 	perl-IPC-Cmd \
 	perl-FindBin \
 	libuuid-devel \
-	zlib-devel
+	zlib-devel \
+	libicu-devel \
+	libevent-devel
+
 
 # debug images need valgrind
 RUN yum install -y \

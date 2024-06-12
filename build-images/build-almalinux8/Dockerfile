@@ -7,22 +7,26 @@ MAINTAINER Miro Stauder <miro@sysown.com>
 RUN dnf install epel-release -y && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
 
 # gcc & build tools
-RUN yum install -y\
-	make automake\
-	git patch\
-	bzip2 tar wget\
-	gcc gcc-c++\
-	libtool\
-	rpm-build\
-	python2 python3
+RUN yum install -y \
+	make automake \
+	git patch \
+	bzip2 tar wget \
+	gcc gcc-c++ \
+	libtool \
+	rpm-build \
+	python3 \
+	pkg-config
 
 # proxysql build dependencies
-RUN yum install -y\
-	openssl openssl-devel\
-	gnutls gnutls-devel\
-	libunwind libunwind-devel\
-	perl-IPC-Cmd\
-	libuuid-devel
+RUN yum install -y \
+	openssl openssl-devel \
+	gnutls gnutls-devel \
+	libunwind libunwind-devel \
+	perl-IPC-Cmd \
+	libuuid-devel \
+	libicu-devel \
+	libevent-devel
+
 
 # debug images need valgrind
 RUN yum install -y \

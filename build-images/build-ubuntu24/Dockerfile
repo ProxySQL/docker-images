@@ -22,10 +22,11 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get install -y \
 	libssl-dev gnutls-dev libgnutls28-dev \
 	libmysqlclient-dev \
-	libboost-all-dev \
 	libunwind8 libunwind-dev \
 	uuid-dev \
-	libncurses-dev
+	libncurses-dev \
+	libicu-dev \
+	libevent-dev
 
 # debug images need valgrind
 RUN apt-get install -y \

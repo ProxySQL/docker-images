@@ -11,17 +11,18 @@ RUN apt-get update && apt-get install -y \
 	libtool \
 	gdb gdbserver \
 	equivs \
-	python python3 \
+	python3 \
 	pkg-config
 
 # proxysql build dependencies
 RUN apt-get install -y \
 	libssl-dev gnutls-dev libgnutls28-dev \
 	libmysqlclient-dev \
-	libboost1.62-all-dev \
 	libunwind8 libunwind-dev \
 	uuid-dev \
-	libncurses-dev
+	libncurses-dev \
+	libicu-dev \
+	libevent-dev
 
 # debug images need valgrind
 RUN apt-get update && apt-get install -y \

@@ -4,25 +4,28 @@ MAINTAINER Miro Stauder <miro@sysown.com>
 RUN zypper update -y
 
 # gcc & build tools
-#RUN zypper install -y\
+#RUN zypper install -y \
 #	gcc10 gcc10-c++
 
-RUN zypper install -y\
-	make automake\
-	git patch\
-	bzip2 gzip tar wget\
-	gcc gcc-c++\
-	rpm-build\
-	python python3\
-	libtool
+RUN zypper install -y \
+	make automake \
+	git patch \
+	bzip2 gzip tar wget \
+	gcc gcc-c++ \
+	rpm-build \
+	python3 \
+	libtool \
+	pkg-config
 
 # proxysql build dependencies
-RUN zypper install -y\
-	openssl libopenssl-devel\
-	gnutls libgnutls-devel\
-	libunwind libunwind-devel\
-	zlib-devel\
-	libuuid-devel
+RUN zypper install -y \
+	openssl libopenssl-devel \
+	gnutls libgnutls-devel \
+	libunwind libunwind-devel \
+	zlib-devel \
+	libuuid-devel \
+	libicu-devel \
+	libevent-devel
 
 #RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 #RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
