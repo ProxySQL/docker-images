@@ -3,26 +3,29 @@ MAINTAINER Miro Stauder <miro@sysown.com>
 
 # clang & build tools
 RUN dnf install -y\
-	make automake\
-	git patch which\
+	make automake \
+	git patch which \
 	bzip2 tar wget
 
 # try avoiding pulling gcc as dependency
-RUN dnf install -y --setopt=install_weak_deps=False --best\
-	clang lld compiler-rt\
-	rpm-build\
-	python2 python3\
-	libtool
+RUN dnf install -y --setopt=install_weak_deps=False --best \
+	clang lld compiler-rt \
+	rpm-build \
+	python3 \
+	libtool \
+	pkg-config
 
 # proxysql build dependencies
-RUN dnf install -y\
-	openssl openssl-devel\
-	gnutls gnutls-devel\
-	libunwind libunwind-devel\
-	zlib-devel\
-	perl-FindBin\
-	perl-IPC-Cmd\
-	libuuid-devel
+RUN dnf install -y \
+	openssl openssl-devel \
+	gnutls gnutls-devel \
+	libunwind libunwind-devel \
+	zlib-devel \
+	perl-FindBin \
+	perl-IPC-Cmd \
+	libuuid-devel \
+	libicu-devel \
+	libevent-devel
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

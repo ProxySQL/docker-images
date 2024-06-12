@@ -3,7 +3,7 @@ MAINTAINER Miro Stauder <miro@sysown.com>
 
 # clang & build tools
 RUN dnf install -y \
-	make automake cmake \
+	make cmake automake \
 	git patch which \
 	bzip2 tar wget
 
@@ -11,8 +11,9 @@ RUN dnf install -y \
 RUN dnf install -y --setopt=install_weak_deps=False --best \
 	clang lld compiler-rt \
 	rpm-build \
-	python2 python3 \
-	libtool
+	python3 \
+	libtool \
+	pkg-config
 
 # proxysql build dependencies
 RUN dnf install -y \
@@ -22,7 +23,9 @@ RUN dnf install -y \
 	zlib-devel \
 	perl-FindBin \
 	perl-IPC-Cmd \
-	libuuid-devel
+	libuuid-devel \
+	libicu-devel \
+	libevent-devel
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'
@@ -34,6 +37,7 @@ RUN ${CXX} --version
 
 # build && install current cmake
 #RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1
+# better version alredy provided
 
 # remove gcc pulled in as clang dependency
 #RUN rpm -e --nodeps gcc gcc-c++

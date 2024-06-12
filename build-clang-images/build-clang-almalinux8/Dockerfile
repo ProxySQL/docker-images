@@ -16,8 +16,9 @@ RUN dnf install -y \
 RUN dnf install -y --setopt=install_weak_deps=False --best\
 	clang lld compiler-rt \
 	rpm-build \
-	python2 python3 \
-	libtool
+	python3 \
+	libtool \
+	pkg-config
 
 #RUN clang --version
 #RUN gcc --version
@@ -28,7 +29,9 @@ RUN yum install -y \
 	gnutls gnutls-devel \
 	libunwind libunwind-devel \
 	perl-IPC-Cmd \
-	libuuid-devel
+	libuuid-devel \
+	libicu-devel \
+	libevent-devel
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

@@ -6,11 +6,12 @@ ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # clang & build tools
-RUN apt-get update && apt-get install -y\
-	make automake\
-	git wget\
-	clang lld\
-	python python3
+RUN apt-get update && apt-get install -y \
+	make automake \
+	git wget \
+	clang lld \
+	python3 \
+	pkg-config
 
 # libtool needs to be installed separately
 # depends on c-compiler provided by clang otherwise it pulls in gcc
@@ -27,7 +28,9 @@ RUN apt-get install -y\
 	gnutls-dev libgnutls28-dev libssl-dev\
 	libmysqlclient-dev\
 	libunwind8 libunwind-dev\
-	uuid-dev
+	uuid-dev \
+	libicu-dev \
+	libevent-dev
 
 RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h
 

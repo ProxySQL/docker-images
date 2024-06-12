@@ -15,7 +15,8 @@ RUN dnf install -y --setopt=install_weak_deps=False --best \
 	clang lld compiler-rt \
 	rpm-build \
 	python3 \
-	libtool
+	libtool \
+	pkg-config
 
 #RUN clang --version
 #RUN gcc --version
@@ -28,7 +29,9 @@ RUN yum install -y \
 	perl-IPC-Cmd \
 	perl-FindBin \
 	libuuid-devel \
-	zlib-devel
+	zlib-devel \
+	libicu-devel \
+	libevent-devel
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

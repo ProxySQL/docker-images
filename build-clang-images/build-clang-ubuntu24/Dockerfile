@@ -23,14 +23,17 @@ RUN apt-get install -y \
 # equivs needs to install with --no-install-recommends
 # otherwise it pulls in gcc
 RUN apt-get install -y --no-install-recommends \
-	equivs
+	equivs \
+	cmake
 
 # proxysql build dependencies
 RUN apt-get install -y \
 	gnutls-dev libgnutls28-dev libssl-dev \
 	libmysqlclient-dev \
 	libunwind8 libunwind-dev \
-	uuid-dev
+	uuid-dev \
+	libicu-dev \
+	libevent-dev
 
 # debug images need valgrind
 RUN apt-get install -y \
@@ -50,3 +53,4 @@ RUN ${CXX} --version
 # build && install current cmake
 #RUN ln -s /usr/bin/make /usr/bin/gmake
 #RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1
+# better version already present

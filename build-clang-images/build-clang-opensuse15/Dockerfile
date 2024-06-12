@@ -12,7 +12,8 @@ RUN zypper install -y \
 	git patch \
 	bzip2 gzip tar wget \
 	rpm-build \
-	python python3 \
+	python3 \
+	pkg-config \
 	libtool
 
 # proxysql build dependencies
@@ -23,7 +24,9 @@ RUN zypper install -y \
 	libcurl-devel \
 	zlib-devel \
 	libc++-devel libstdc++-devel \
-	libuuid-devel
+	libuuid-devel \
+	libicu-devel \
+	libevent-devel
 
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-15 50
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-15 50
