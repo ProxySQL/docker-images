@@ -8,7 +8,7 @@ RUN zypper install -y \
 	clang lld
 
 RUN zypper install -y \
-	make automake \
+	make cmake automake \
 	git patch \
 	bzip2 gzip tar wget \
 	rpm-build \
@@ -28,12 +28,12 @@ RUN zypper install -y \
 	libicu-devel \
 	libevent-devel
 
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-15 50
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-15 50
+RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 50
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-17 50
 
 # https://forums.opensuse.org/showthread.php/530520-Clang-and-LLVM-6-0?p=2861482#post2861482
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-15 50 \
-	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-15
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 50 \
+	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-17
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'
@@ -44,4 +44,5 @@ ENV CXX=clang++
 RUN ${CXX} --version
 
 # build && install current cmake
-RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1
+#RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1
+# better version already present
