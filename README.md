@@ -64,16 +64,22 @@ Bootstrap BuildX for local multiarch using qemu
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     docker buildx create --name multiarch --driver docker-container --use
     docker buildx inspect --bootstrap
-
+    docker buildx ls
+    
 ---
 ### Setup Docker for distributed native multiarch
 
 > [!NOTE]
 > - This requires native hosts for buidling respective arch
+> - docker and buildx must be installed on all nodes
+> - make sure to test the ssh connection first
 
-    docker buildx create --name distarch --driver docker-container --use
-
-TODO
+    docker buildx rm distarch
+    docker buildx create --name distarch --node local_amd64
+    docker buildx create --name distarch --append --node remote_arm64 ssh://root@<IP>
+    docker buildx use distarch
+    docker buildx inspect --bootstrap
+    docker buildx ls
 
 ---
 ### Inner workings
