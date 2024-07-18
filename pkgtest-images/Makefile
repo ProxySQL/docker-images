@@ -1,10 +1,31 @@
 #!/usr/bin/make -f
 
-NPROCS := $(shell nproc)
-export MAKEFLAGS=-j ${NPROCS}
+# default multiarch
+MULTIARCH := 1
+
+ifdef NOMULTIARCH
+override undefine MULTIARCH
+endif
+
+ifdef LOAD
+override LOAD := --load
+endif
+
+ifdef PUSH
+override PUSH := --push
+endif
 
 ifdef SILENT
-override SILENT=-q
+override SILENT := -q
+endif
+
+ifdef NOCACHE
+override NOCACHE := --no-cache
+endif
+
+ifndef VERS
+# get latest development version
+VERS := $(shell curl -s "https://api.github.com/repos/sysown/proxysql/git/refs/tags" | jq -r '.[].ref' | grep -v 'refs/tags/v' | sort | tail -1 | sed 's|refs/tags/||')
 endif
 
 
@@ -25,40 +46,43 @@ pkgtest: $(wildcard pkgtest-*)
 
 
 .PHONY: pkgtest-centos
-pkgtest-centos:
-	make $(wildcard pkgtest-centos*)
+pkgtest-centos: $(wildcard pkgtest-centos*)
 
 .PHONY: pkgtest-fedora
-pkgtest-fedora:
-	make $(wildcard pkgtest-fedora*)
+pkgtest-fedora: $(wildcard pkgtest-fedora*)
 
 .PHONY: pkgtest-debian
-pkgtest-debian:
-	make $(wildcard pkgtest-debian*)
+pkgtest-debian: $(wildcard pkgtest-debian*)
 
 .PHONY: pkgtest-ubuntu
-pkgtest-ubuntu:
-	make $(wildcard pkgtest-ubuntu*)
+pkgtest-ubuntu: $(wildcard pkgtest-ubuntu*)
 
 .PHONY: pkgtest-opensuse
-pkgtest-opensuse:
-	make $(wildcard pkgtest-opensuse*)
+pkgtest-opensuse: $(wildcard pkgtest-opensuse*)
 
 .PHONY: pkgtest-almalinux
-pkgtest-almalinux:
-	make $(wildcard pkgtest-almalinux*)
+pkgtest-almalinux: $(wildcard pkgtest-almalinux*)
 
 
-.SILENT:
+NOARM64 := pkgtest-centos6 pkgtest-ubuntu14
+PLTFRMS := linux/arm64/v8 linux/amd64
+
+#.SILENT: pkgtest-*
 .PHONY: pkgtest-*
+.NOTPARALLEL: pkgtest-*
+pkgtest-*: BLD_PLTFRMS=$(if $(findstring $@, $(NOARM64)),$(filter-out linux/arm64%,$(PLTFRMS)),$(PLTFRMS))
+pkgtest-*: ARG_PLTFRMS=$(subst $() ,$(shell echo ,),$(BLD_PLTFRMS))
 pkgtest-*:
-	echo 'building $@'
-	docker build --rm --tag proxysql/packaging:$@ $@ ${SILENT}
-	echo 'tagged $@'
+ifndef MULTIARCH
+	@echo "building native $@ for 'native'"
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-${VERS} --pull $@ ${PUSH} ${SILENT}
+else
+	@echo "building multiarch $@ for '$(ARG_PLTFRMS)'"
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-${VERS} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT}
+endif
+	@echo 'tagged $@'
 
 
-
-.ONESHELL: images
-images:
-	echo 'Finished building'
-	docker images | grep "proxysql/packaging"
+list:
+	@echo "Available 'proxysql/packaging:pkgtest-*' images:"
+	@docker images | grep "proxysql/packaging" | grep "pkgtest-"

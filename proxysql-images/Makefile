@@ -1,28 +1,31 @@
 #!/usr/bin/make -f
 
-NPROCS := $(shell nproc)
-export MAKEFLAGS=-j ${NPROCS}
-MULTIARCH ?=1
-PUSH ?= --push
-
-ifdef SILENT
-override SILENT=-q
-endif
-
-ifdef NOCACHE
-override NOCACHE=--no-cache
-endif
+# default multiarch
+MULTIARCH := 1
 
 ifdef NOMULTIARCH
 override undefine MULTIARCH
 endif
 
-ifdef NOPUSH
-override undefine PUSH
+ifdef LOAD
+override LOAD := --load
+endif
+
+ifdef PUSH
+override PUSH := --push
+endif
+
+ifdef SILENT
+override SILENT := -q
+endif
+
+ifdef NOCACHE
+override NOCACHE := --no-cache
 endif
 
 ifndef VERS
-VERS=$(shell curl -sI https://github.com/sysown/proxysql/releases/latest | grep location: | grep -Po '\d[\d\.]+')
+# get latest release version
+VERS := $(shell curl -s "https://api.github.com/repos/sysown/proxysql/releases/latest" | jq -r '.name' | tr -d 'v')
 endif
 
 
@@ -48,6 +51,7 @@ proxysql-centos: $(wildcard proxysql-centos*)
 .PHONY: proxysql-debian
 proxysql-debian: $(wildcard proxysql-debian*)
 
+
 DFLTDST := debian
 PLTFRMS := linux/arm64/v8 linux/amd64
 
@@ -61,19 +65,16 @@ proxysql-*: TAGD=$(shell echo "-t proxysql/proxysql:${VERS}-${DIST}")
 proxysql-*: TAGL=$(shell echo "-t proxysql/proxysql:latest-${DIST}")
 proxysql-*: TAGP=$(if $(findstring $(DFLTDST),$@), $(shell echo "-t proxysql/proxysql:latest"),)
 proxysql-*:
-	@echo "building v$(VERS) of $@ for '$(ARG_PLTFRMS)'"
 ifndef MULTIARCH
-	@# build native only
-	docker build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull $@ ${SILENT}
-endif
-ifdef MULTIARCH
-	@# try building, fallback to native
-	docker buildx build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT} || \
-	docker buildx build --build-arg VERS=$(VERS) ${NOCACHE} $(TAGV) $(TAGD) $(TAGL) $(TAGP) --pull $@ ${PUSH} ${SILENT}
+	@echo "building native $@ for 'native'"
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-${VERS} --pull $@ ${PUSH} ${SILENT}
+else
+	@echo "building multiarch $@ for '$(ARG_PLTFRMS)'"
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-${VERS} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT}
 endif
 	@echo 'tagged $@'
 
 
-images:
-	@echo "Available 'proxysql/packaging' images:"
-	docker images | grep "proxysql/packaging"
+list:
+	@echo "Available 'proxysql/proxysql' images:"
+	@docker images | grep "proxysql/proxysql"

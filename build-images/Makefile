@@ -1,10 +1,31 @@
 #!/usr/bin/make -f
 
-NPROCS := $(shell nproc)
-export MAKEFLAGS=-j ${NPROCS}
+# default multiarch
+MULTIARCH := 1
+
+ifdef NOMULTIARCH
+override undefine MULTIARCH
+endif
+
+ifdef LOAD
+override LOAD := --load
+endif
+
+ifdef PUSH
+override PUSH := --push
+endif
 
 ifdef SILENT
-override SILENT=-q
+override SILENT := -q
+endif
+
+ifdef NOCACHE
+override NOCACHE := --no-cache
+endif
+
+ifndef VERS
+# get latest development version
+VERS := $(shell curl -s "https://api.github.com/repos/sysown/proxysql/git/refs/tags" | jq -r '.[].ref' | grep -v 'refs/tags/v' | sort | tail -1 | sed 's|refs/tags/||')
 endif
 
 
@@ -25,40 +46,43 @@ build: $(wildcard build-*)
 
 
 .PHONY: build-centos
-build-centos:
-	make $(wildcard build-centos*)
+build-centos: $(wildcard build-centos*)
 
 .PHONY: build-fedora
-build-fedora:
-	make $(wildcard build-fedora*)
+build-fedora: $(wildcard build-fedora*)
 
 .PHONY: build-debian
-build-debian:
-	make $(wildcard build-debian*)
+build-debian: $(wildcard build-debian*)
 
 .PHONY: build-ubuntu
-build-ubuntu:
-	make $(wildcard build-ubuntu*)
+build-ubuntu: $(wildcard build-ubuntu*)
 
 .PHONY: build-opensuse
-build-opensuse:
-	make $(wildcard build-opensuse*)
+build-opensuse: $(wildcard build-opensuse*)
 
 .PHONY: build-almalinux
-build-almalinux:
-	make $(wildcard build-almalinux*)
+build-almalinux: $(wildcard build-almalinux*)
 
 
-.SILENT:
+NOARM64 := build-centos6 build-ubuntu14
+PLTFRMS := linux/arm64/v8 linux/amd64
+
+#.SILENT: build-*
 .PHONY: build-*
+.NOTPARALLEL: build-*
+build-*: BLD_PLTFRMS=$(if $(findstring $@, $(NOARM64)),$(filter-out linux/arm64%,$(PLTFRMS)),$(PLTFRMS))
+build-*: ARG_PLTFRMS=$(subst $() ,$(shell echo ,),$(BLD_PLTFRMS))
 build-*:
-	echo 'building $@'
-	docker build --rm --tag proxysql/packaging:$@ $@ ${SILENT}
-	echo 'tagged $@'
+ifndef MULTIARCH
+	@echo "building native $@ for 'native'"
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-v${VERS} --pull $@ ${PUSH} ${LOAD} ${SILENT}
+else
+	@echo "building multiarch $@ for '$(ARG_PLTFRMS)'"
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-v${VERS} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${LOAD} ${SILENT}
+endif
+	@echo 'tagged $@'
 
 
-
-.ONESHELL: images
-images:
-	echo 'Finished building'
-	docker images | grep "proxysql/packaging"
+list:
+	@echo "Available 'proxysql/packaging:build-*' images:"
+	@docker images | grep "proxysql/packaging" | grep "build-" | grep -v "build-clang-"
