@@ -75,10 +75,10 @@ build-*: ARG_PLTFRMS=$(subst $() ,$(shell echo ,),$(BLD_PLTFRMS))
 build-*:
 ifndef MULTIARCH
 	@echo "building native $@ for 'native'"
-	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-v${VERS} --pull $@ ${PUSH} ${LOAD} ${SILENT}
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-v${VERS} --pull $@ ${LOAD} ${SILENT}
 else
 	@echo "building multiarch $@ for '$(ARG_PLTFRMS)'"
-	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-v${VERS} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${LOAD} ${SILENT}
+	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-v${VERS} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT}
 endif
 	@echo 'tagged $@'
 

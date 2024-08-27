@@ -28,22 +28,29 @@ Images can be found at:
 
 ---
 ### How to build images
+
+> [!NOTE]
+> - default build is MULTIARCH
+> - built images are cached, and need LOAD or PUSH to be available
+> - PUSH needs `docker credentials` authentication to `hub.docker.com`
+
 #### Native-arch
-run make inside of one of the folders to build native image,
+run `make` inside of one of the folders to build native image, and load it into local image store
 e.g.:
 
     cd build-images
     make clean
-    make [target]
+    NOMULTIARCH=1 LOAD=1 make [target]
 
 #### Multi-arch
-run make inside of one of the folders to build multi-arch images,
-supported architectures are amd64 and arm64.
+run `make` inside of one of the folders to build multi-arch images,
+ and push to `hub.docker.com` image registry,
+ supported architectures are amd64 and arm64.
 e.g.:
 
     cd build-images
     make clean
-    make -f Makefile.multiarch [target]
+    PUSH=1 make [target]
 
 ---
 ### Setup Docker for local multiarch via Qemu

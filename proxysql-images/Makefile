@@ -67,10 +67,10 @@ proxysql-*: TAGP=$(if $(findstring $(DFLTDST),$@), $(shell echo "-t proxysql/pro
 proxysql-*:
 ifndef MULTIARCH
 	@echo "building native $@ for 'native'"
-	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-${VERS} --pull $@ ${PUSH} ${SILENT}
+	docker buildx build ${NOCACHE} --build-arg VERS=${VERS} -t proxysql/proxysql:latest -t proxysql/proxysql:latest-${DIST} -t proxysql/proxysql:${VERS} -t proxysql/proxysql:${VERS}-${DIST} --pull $@ ${LOAD} ${SILENT}
 else
 	@echo "building multiarch $@ for '$(ARG_PLTFRMS)'"
-	docker buildx build ${NOCACHE} -t proxysql/packaging:$@ -t proxysql/packaging:$@-${VERS} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT}
+	docker buildx build ${NOCACHE} --build-arg VERS=${VERS} -t proxysql/proxysql:latest -t proxysql/proxysql:latest-${DIST} -t proxysql/proxysql:${VERS} -t proxysql/proxysql:${VERS}-${DIST} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT}
 endif
 	@echo 'tagged $@'
 
