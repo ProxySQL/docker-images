@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 RUN echo "Ubuntu $(cat /etc/os-release | grep 'VERSION=' | sed 's/VERSION=//; s/"//g')" >&2
 
