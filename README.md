@@ -68,7 +68,9 @@ Qemu is required for multiarch local builds
 
 Bootstrap BuildX for local multiarch using qemu
 
+    docker rm -f buildx_buildkit_multiarch0
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    docker buildx rm multiarch
     docker buildx create --name multiarch --driver docker-container --use
     docker buildx inspect --bootstrap
     docker buildx ls
