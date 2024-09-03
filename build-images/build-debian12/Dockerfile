@@ -1,11 +1,14 @@
 FROM debian:12
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
-RUN chmod 777 /tmp
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+	apt full-upgrade -y
 
 # gcc & build tools
-RUN apt-get update && apt-get install -y \
-	make automake \
+RUN apt install -y \
+	make cmake automake \
 	git wget \
 	gcc g++ \
 	libtool \
@@ -15,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 	pkg-config
 
 # proxysql build dependencies
-RUN apt-get install -y \
+RUN apt install -y \
 	libssl-dev gnutls-dev libgnutls28-dev \
 	libmariadb-dev \
 	libunwind8 libunwind-dev \
@@ -25,8 +28,13 @@ RUN apt-get install -y \
 	libevent-dev
 
 # debug images need valgrind
-RUN apt-get update && apt-get install -y \
+RUN apt install -y \
 	valgrind
+
+# clean apt cache
+RUN apt clean && \
+	rm -rf /var/cache/apt/* && \
+	rm -rf /var/lib/apt/lists/*
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'
@@ -36,5 +44,3 @@ ENV CXX=g++
 
 RUN ${CXX} --version
 
-# build && install current cmake
-RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1

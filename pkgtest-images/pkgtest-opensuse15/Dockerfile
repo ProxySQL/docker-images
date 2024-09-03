@@ -1,5 +1,5 @@
-FROM opensuse/leap:15
-MAINTAINER Miro Stauder <miro@sysown.com>
+FROM opensuse/leap:15.5
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 RUN zypper update -y
 
@@ -11,3 +11,6 @@ RUN cp /usr/lib/systemd/system/dbus.service /etc/systemd/system/; \
 # runtime dependencies
 RUN zypper install -y\
 	gnutls
+
+# cleanup rpm cache
+RUN zypper clean --all

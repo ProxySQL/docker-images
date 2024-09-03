@@ -1,8 +1,8 @@
 FROM fedora:39
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 # clang & build tools
-RUN dnf install -y\
+RUN dnf install -y \
 	make automake \
 	git patch which \
 	bzip2 tar wget
@@ -26,6 +26,10 @@ RUN dnf install -y \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel
+
+# cleanup rpm cache
+RUN yum clean all && \
+	rm -rf /var/cache/yum
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

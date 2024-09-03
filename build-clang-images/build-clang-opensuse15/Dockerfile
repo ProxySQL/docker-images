@@ -1,5 +1,5 @@
-FROM opensuse/leap:15
-MAINTAINER Miro Stauder <miro@sysown.com>
+FROM opensuse/leap:15.5
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 RUN zypper update -y
 
@@ -28,12 +28,15 @@ RUN zypper install -y \
 	libicu-devel \
 	libevent-devel
 
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 50
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-17 50
+RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-15 50
+RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-15 50
 
 # https://forums.opensuse.org/showthread.php/530520-Clang-and-LLVM-6-0?p=2861482#post2861482
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 50 \
-	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-17
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-15 50 \
+	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-15
+
+# cleanup rpm cache
+RUN zypper clean --all
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

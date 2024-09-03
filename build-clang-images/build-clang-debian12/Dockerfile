@@ -1,5 +1,5 @@
 FROM debian:12
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 #RUN chmod 777 /tmp
 
@@ -29,6 +29,11 @@ RUN apt-get install -y \
 	uuid-dev \
 	libicu-dev \
 	libevent-dev
+
+# clean apt cache
+RUN apt clean && \
+	rm -rf /var/cache/apt/* && \
+	rm -rf /var/lib/apt/lists/*
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

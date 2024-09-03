@@ -1,5 +1,5 @@
 FROM almalinux:8
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 # fix keys
 #RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
@@ -32,6 +32,10 @@ RUN yum install -y \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel
+
+# cleanup rpm cache
+RUN yum clean all && \
+	rm -rf /var/cache/yum
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

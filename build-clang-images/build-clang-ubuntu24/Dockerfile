@@ -1,5 +1,5 @@
 FROM ubuntu:24.04
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 RUN chmod 777 /tmp
 ENV TZ=UTC
@@ -38,6 +38,11 @@ RUN apt-get install -y \
 # debug images need valgrind
 RUN apt-get install -y \
 	valgrind
+
+# clean apt cache
+RUN apt clean && \
+	rm -rf /var/cache/apt/* && \
+	rm -rf /var/lib/apt/lists/*
 
 # fetch needed include
 RUN wget -q -O /usr/include/mysql/hash.h https://raw.githubusercontent.com/mysql/mysql-server/5.7/include/hash.h

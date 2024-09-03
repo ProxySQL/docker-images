@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -11,3 +11,8 @@ RUN apt-get update && apt-get -y dist-upgrade
 RUN apt-get -y install\
 	libgnutls30\
 	ca-certificates
+
+# clean apt cache
+RUN apt clean && \
+	rm -rf /var/cache/apt/* && \
+	rm -rf /var/lib/apt/lists/*

@@ -1,5 +1,5 @@
 FROM almalinux:8
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 RUN yum -y update
 
@@ -46,3 +46,7 @@ RUN yum -y install\
 	perl-threads\
 	perl-threads-shared\
 	ca-certificates
+
+# cleanup rpm cache
+RUN yum clean all && \
+	rm -rf /var/cache/yum

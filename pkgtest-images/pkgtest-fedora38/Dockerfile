@@ -1,7 +1,5 @@
 FROM fedora:38
-MAINTAINER Miro Stauder <miro@sysown.com>
-
-RUN cat /etc/redhat-release >&2
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 RUN dnf makecache && dnf -y update
 
@@ -64,3 +62,7 @@ RUN dnf -y install\
 	perl-podlators\
 	perl-subs\
 	perl-vars
+
+# cleanup rpm cache
+RUN yum clean all && \
+	rm -rf /var/cache/yum

@@ -1,6 +1,5 @@
 FROM debian:12
-
-MAINTAINER Miro Stauder <miro@proxysql.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ARG VERS
 
@@ -25,7 +24,12 @@ RUN wget -nv -O - "https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/repo
 RUN echo "deb https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/$(lsb_release -sc)/ ./" | \
 	tee /etc/apt/sources.list.d/proxysql.list && \
 	apt-get update && \
-	apt-get install proxysql && \
+	apt-get install proxysql
+
+# clean apt cache
+RUN apt clean && \
+	rm -rf /var/cache/apt/* && \
 	rm -rf /var/lib/apt/lists/*
+
 
 CMD ["proxysql", "-f", "--idle-threads", "-D", "/var/lib/proxysql"]

@@ -1,9 +1,12 @@
 FROM fedora:40
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
+
+# update packages
+RUN yum update -y
 
 # gcc & build tools
 RUN dnf install -y \
-	make automake cmake \
+	make cmake automake \
 	git patch \
 	bzip2 tar wget \
 	gcc gcc-c++ \
@@ -29,6 +32,10 @@ RUN dnf install -y \
 RUN dnf install -y \
 	valgrind valgrind-devel
 
+# cleanup rpm cache
+RUN dnf clean all && \
+	rm -rf /var/cache/yum
+
 # configure git safe dir
 RUN git config --global --add safe.directory '*'
 
@@ -36,6 +43,3 @@ ENV CC=gcc
 ENV CXX=g++
 
 RUN ${CXX} --version
-
-# build && install current cmake
-#RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1

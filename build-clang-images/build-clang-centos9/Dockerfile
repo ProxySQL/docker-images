@@ -1,5 +1,5 @@
 FROM quay.io/centos/centos:stream9
-MAINTAINER Miro Stauder <miro@sysown.com>
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 # install from epel
 RUN dnf install epel-release -y && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
@@ -32,6 +32,10 @@ RUN yum install -y \
 	zlib-devel \
 	libicu-devel \
 	libevent-devel
+
+# cleanup rpm cache
+RUN yum clean all && \
+	rm -rf /var/cache/yum
 
 # configure git safe dir
 RUN git config --global --add safe.directory '*'

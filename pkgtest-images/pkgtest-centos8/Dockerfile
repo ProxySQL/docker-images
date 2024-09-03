@@ -1,7 +1,5 @@
 FROM centos:centos8
-MAINTAINER Miro Stauder <miro@sysown.com>
-
-RUN cat /etc/redhat-release >&2
+LABEL authors="Miro Stauder <miro@sysown.com>"
 
 # fix keys
 RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
@@ -55,3 +53,7 @@ RUN yum -y install\
 	perl-podlators\
 	perl-threads\
 	perl-threads-shared
+
+# cleanup rpm cache
+RUN yum clean all && \
+	rm -rf /var/cache/yum
