@@ -18,7 +18,7 @@ RUN cat /etc/redhat-release >&2
 RUN yum -y install mysql
 
 RUN echo -e "[proxysql_repo]\nname= ProxySQL YUM repository\nbaseurl=https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/centos/\$releasever\ngpgcheck=1\ngpgkey=https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/repo_pub_key" > /etc/yum.repos.d/proxysql.repo && \
-	yum -y install proxysql && \
+	yum -y install proxysql-${VERS} && \
 	rm -fr /var/lib/proxysql && \
 	mkdir -p /var/lib/proxysql
 

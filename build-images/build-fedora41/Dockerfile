@@ -1,4 +1,4 @@
-FROM fedora:40
+FROM fedora:41
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
 # update packages
@@ -17,7 +17,7 @@ RUN dnf install -y \
 
 # proxysql build dependencies
 RUN dnf install -y \
-	openssl openssl-devel \
+	openssl openssl-devel openssl-devel-engine \
 	gnutls gnutls-devel \
 	libunwind libunwind-devel \
 	zlib-devel \

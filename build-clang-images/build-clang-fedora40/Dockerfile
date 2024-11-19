@@ -1,6 +1,9 @@
 FROM fedora:40
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
+# update packages
+RUN dnf update -y
+
 # clang & build tools
 RUN dnf install -y \
 	make cmake automake \

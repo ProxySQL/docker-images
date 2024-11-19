@@ -22,6 +22,7 @@ RUN yum install -y \
 # proxysql build dependencies
 RUN yum install -y \
 	openssl openssl-devel \
+	openssl3 openssl3-devel \
 	gnutls gnutls-devel \
 	libunwind libunwind-devel \
 	perl-IPC-Cmd \

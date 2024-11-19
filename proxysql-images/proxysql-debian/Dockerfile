@@ -24,7 +24,7 @@ RUN wget -nv -O - "https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/repo
 RUN echo "deb https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/$(lsb_release -sc)/ ./" | \
 	tee /etc/apt/sources.list.d/proxysql.list && \
 	apt-get update && \
-	apt-get install proxysql
+	apt-get install proxysql=${VERS}
 
 # clean apt cache
 RUN apt clean && \
