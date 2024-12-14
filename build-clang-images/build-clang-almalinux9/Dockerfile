@@ -51,3 +51,7 @@ RUN ${CXX} --version
 
 # remove gcc pulled in as clang dependency
 #RUN rpm -e --nodeps gcc gcc-c++
+
+# fix wrong libctf version
+RUN ln -fs /opt/rh/gcc-toolset-14/root/usr/lib64/libctf.so.0.0.0 /usr/lib64/libctf.so.0.0.0; \
+    ln -fs /opt/rh/gcc-toolset-14/root/usr/lib64/libctf-nobfd.so.0.0.0 /usr/lib64/libctf-nobfd.so.0.0.0
