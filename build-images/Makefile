@@ -9,6 +9,7 @@ endif
 
 ifdef LOAD
 override LOAD := --load
+override undefine MULTIARCH
 endif
 
 ifdef PUSH
