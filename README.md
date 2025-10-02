@@ -85,7 +85,7 @@ Bootstrap BuildX for local multiarch using qemu
 
     docker buildx rm distarch
     docker buildx create --name distarch --node local_amd64
-    docker buildx create --name distarch --append --node remote_arm64 ssh://root@<IP>
+    docker buildx create --name distarch --append --node remote_arm64 ssh://root@<IP>:<PORT>
     docker buildx use distarch
     docker buildx inspect --bootstrap
     docker buildx ls

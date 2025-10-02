@@ -7,7 +7,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # clang & build tools
 RUN apt-get update && apt-get install -y \
-	make automake \
+	make cmake automake bison flex \
 	git wget \
 	clang lld \
 	python3 \
@@ -23,8 +23,7 @@ RUN apt-get install -y \
 # equivs needs to install with --no-install-recommends
 # otherwise it pulls in gcc
 RUN apt-get install -y --no-install-recommends \
-	equivs	\
-	cmake
+	equivs
 
 # proxysql build dependencies
 RUN apt-get install -y \

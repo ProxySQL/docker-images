@@ -8,7 +8,7 @@ RUN apt update && \
 
 # gcc & build tools
 RUN apt install -y \
-	make automake cmake \
+	make cmake automake bison flex \
 	git wget \
 	gcc g++ \
 	libtool \

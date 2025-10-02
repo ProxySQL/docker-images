@@ -1,34 +1,38 @@
 FROM debian:trixie
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
-#RUN chmod 777 /tmp
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+	apt full-upgrade -y
 
 # clang & build tools
-RUN apt-get update && apt-get install -y \
-	make cmake automake gawk \
-	git wget \
+RUN apt install -y \
+	make cmake automake bison flex \
+	git wget gawk \
 	clang lld \
 	python3 \
 	pkg-config
 
 # libtool needs to be installed separately
 # depends on c-compiler provided by clang otherwise it pulls in gcc
-RUN apt-get install -y \
+RUN apt install -y \
 	libtool
 
 # equivs needs to install with --no-install-recommends
 # otherwise it pulls in gcc
-RUN apt-get install -y --no-install-recommends \
+RUN apt install -y --no-install-recommends \
 	equivs
 
 # proxysql build dependencies
-RUN apt-get install -y \
+RUN apt install -y \
 	gnutls-dev libgnutls28-dev libssl-dev \
 	libmariadb-dev \
 	libunwind8 libunwind-dev \
 	uuid-dev \
 	libicu-dev \
-	libevent-dev
+	libevent-dev \
+	libtirpc-dev
 
 # clean apt cache
 RUN apt clean && \
@@ -42,6 +46,3 @@ ENV CC=clang
 ENV CXX=clang++
 
 RUN ${CXX} --version
-
-# build && install current cmake
-#RUN cd /root && wget --no-check-certificate https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz && tar -zxf cmake-3.22.1.tar.gz && cd cmake-3.22.1 && ./configure && gmake -j$(nproc) && gmake install && cd .. && rm -rf cmake-3.22.1.tar.gz cmake-3.22.1

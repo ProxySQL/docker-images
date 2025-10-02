@@ -1,4 +1,4 @@
-FROM debian:trixie
+FROM debian:13
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -8,7 +8,7 @@ RUN apt update && \
 
 # gcc & build tools
 RUN apt install -y \
-	make cmake automake \
+	make cmake automake bison flex \
 	git wget \
 	gcc g++ \
 	libtool \
@@ -25,7 +25,8 @@ RUN apt install -y \
 	uuid-dev \
 	libncurses-dev \
 	libicu-dev \
-	libevent-dev
+	libevent-dev \
+	libtirpc-dev
 
 # debug images need valgrind
 RUN apt install -y \

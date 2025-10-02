@@ -1,4 +1,4 @@
-FROM debian:13
+FROM debian:12
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ARG VERS

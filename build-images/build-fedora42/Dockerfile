@@ -6,7 +6,7 @@ RUN dnf update -y
 
 # gcc & build tools
 RUN dnf install -y \
-	make cmake automake \
+	make cmake automake bison flex \
 	git patch \
 	bzip2 tar wget \
 	gcc gcc-c++ \
@@ -25,8 +25,13 @@ RUN dnf install -y \
 	perl-IPC-Cmd \
 	libuuid-devel \
 	libicu-devel \
-	libevent-devel
+	libevent-devel \
+	ncurses-devel
 
+# install from CRB repo on CentOS
+RUN yum install -y \
+	libtirpc-devel \
+	rpcgen
 
 # debug images need valgrind
 RUN dnf install -y \

@@ -1,5 +1,8 @@
-FROM opensuse/leap:15.6
+FROM opensuse/leap:16.0
 LABEL authors="Miro Stauder <miro@sysown.com>"
+
+ENV ZYPP_PCK_PRELOAD='1 zypper dup'
+ENV ZYPP_CURL2='1 zypper ref'
 
 RUN zypper update -y
 
@@ -20,7 +23,6 @@ RUN zypper install -y \
 RUN zypper install -y \
 	openssl libopenssl-devel \
 	gnutls libgnutls-devel \
-	libunwind libunwind-devel \
 	libcurl-devel \
 	zlib-devel \
 	libc++-devel libstdc++-devel \
@@ -28,19 +30,21 @@ RUN zypper install -y \
 	libicu-devel \
 	libevent-devel
 
-RUN zypper addrepo -f 'http://download.opensuse.org/distribution/leap/15.6/repo/oss/' leap-15.6-oss
+#RUN zypper addrepo -f 'http://download.opensuse.org/tumbleweed/repo/oss/' tumbleweed-oss
+RUN zypper addrepo -f 'http://download.opensuse.org/distribution/leap/16.0/repo/oss/' leap-16.0-oss
 RUN zypper install -y \
 	libtirpc-devel \
 	libtirpc3 \
 	libtirpc-netconfig \
-	rpcbind
+	rpcbind \
+	libunwind8 libunwind-devel
 
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 50
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-17 50
+#RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 50
+#RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-17 50
 
 # https://forums.opensuse.org/showthread.php/530520-Clang-and-LLVM-6-0?p=2861482#post2861482
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 50 \
-	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-17
+#RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 50 \
+#	--slave /usr/bin/clang++ clang++ /usr/bin/clang++-17
 
 # cleanup rpm cache
 RUN zypper clean --all

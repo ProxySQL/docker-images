@@ -6,7 +6,7 @@ RUN dnf install epel-release -y && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPE
 
 # clang & build tools
 RUN dnf install -y \
-	make cmake automake \
+	make cmake automake bison flex \
 	git patch which \
 	bzip2 tar wget
 
@@ -50,7 +50,7 @@ RUN ${CXX} --version
 # better version already provided
 
 # remove gcc pulled in as clang dependency
-#RUN rpm -e --nodeps gcc gcc-c++
+RUN rpm -e --nodeps gcc gcc-c++
 
 # fix wrong libctf version
 RUN ln -fs /opt/rh/gcc-toolset-14/root/usr/lib64/libctf.so.0.0.0 /usr/lib64/libctf.so.0.0.0; \

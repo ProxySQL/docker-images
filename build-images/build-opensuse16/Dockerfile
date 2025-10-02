@@ -1,4 +1,4 @@
-FROM opensuse/leap:15.6
+FROM opensuse/leap:16.0
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ENV ZYPP_PCK_PRELOAD='1 zypper dup'
@@ -24,19 +24,20 @@ RUN zypper install -y \
 RUN zypper install -y \
 	openssl libopenssl-devel \
 	gnutls libgnutls-devel \
-	libunwind libunwind-devel \
 	zlib-devel \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel \
 	ncurses-devel
 
-RUN zypper addrepo -f 'http://download.opensuse.org/distribution/leap/15.6/repo/oss/' leap-15.6-oss
+#RUN zypper addrepo -f 'http://download.opensuse.org/tumbleweed/repo/oss/' tumbleweed-oss
+RUN zypper addrepo -f 'http://download.opensuse.org/distribution/leap/16.0/repo/oss/' leap-16.0-oss
 RUN zypper install -y \
 	libtirpc-devel \
 	libtirpc3 \
 	libtirpc-netconfig \
-	rpcbind
+	rpcbind \
+	libunwind8 libunwind-devel
 
 #RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 #RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50

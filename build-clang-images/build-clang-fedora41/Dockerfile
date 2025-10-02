@@ -6,7 +6,7 @@ RUN dnf update -y
 
 # clang & build tools
 RUN dnf install -y \
-	make cmake automake \
+	make cmake automake bison flex \
 	git patch which \
 	bzip2 tar wget
 

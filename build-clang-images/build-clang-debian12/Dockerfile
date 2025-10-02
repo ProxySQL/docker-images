@@ -5,8 +5,8 @@ LABEL authors="Miro Stauder <miro@sysown.com>"
 
 # clang & build tools
 RUN apt-get update && apt-get install -y \
-	make automake gawk \
-	git wget \
+	make automake bison flex \
+	git wget gawk \
 	clang lld \
 	python3 \
 	pkg-config

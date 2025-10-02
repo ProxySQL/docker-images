@@ -10,7 +10,7 @@ RUN yum install -y epel-release && \
 
 # gcc & build tools
 RUN yum install -y \
-	make automake \
+	make automake bison flex \
 	git patch \
 	bzip2 tar wget \
 	gcc gcc-c++ \
@@ -28,8 +28,13 @@ RUN yum install -y \
 	perl-IPC-Cmd \
 	libuuid-devel \
 	libicu-devel \
-	libevent-devel
+	libevent-devel \
+	ncurses-devel
 
+# install from CRB repo
+RUN yum install -y --enablerepo=powertools \
+	libtirpc-devel \
+	rpcgen
 
 # debug images need valgrind
 RUN yum install -y \

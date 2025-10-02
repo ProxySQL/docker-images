@@ -1,4 +1,4 @@
-FROM quay.io/centos/centos:stream10
+FROM quay.io/centos/centos:stream9
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ARG VERS
