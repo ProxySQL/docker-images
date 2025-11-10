@@ -36,7 +36,7 @@ RUN zypper install -y \
 	libtirpc-devel \
 	libtirpc3 \
 	libtirpc-netconfig \
-	rpcbind
+	rpcgen rpcbind
 
 #RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 #RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50

@@ -26,6 +26,7 @@ RUN yum install -y \
 	libunwind libunwind-devel \
 	perl-IPC-Cmd \
 	perl-FindBin \
+	perl-Time-Piece \
 	libuuid-devel \
 	zlib-devel \
 	libicu-devel \

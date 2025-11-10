@@ -33,7 +33,7 @@ RUN zypper install -y \
 	libtirpc-devel \
 	libtirpc3 \
 	libtirpc-netconfig \
-	rpcbind
+	rpcgen rpcbind
 
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 50
 RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-17 50

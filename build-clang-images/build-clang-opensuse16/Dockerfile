@@ -36,7 +36,7 @@ RUN zypper install -y \
 	libtirpc-devel \
 	libtirpc3 \
 	libtirpc-netconfig \
-	rpcbind \
+	rpcgen rpcbind \
 	libunwind8 libunwind-devel
 
 #RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 50

@@ -23,6 +23,7 @@ RUN dnf install -y \
 	zlib-devel \
 	perl-FindBin \
 	perl-IPC-Cmd \
+	perl-Time-Piece \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel \

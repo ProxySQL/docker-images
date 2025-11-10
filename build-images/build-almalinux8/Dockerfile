@@ -26,6 +26,7 @@ RUN yum install -y \
 	gnutls gnutls-devel \
 	libunwind libunwind-devel \
 	perl-IPC-Cmd \
+	perl-Time-Piece \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel \
