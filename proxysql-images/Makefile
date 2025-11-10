@@ -1,5 +1,6 @@
 #!/usr/bin/make -f
 
+
 # default multiarch
 MULTIARCH := 1
 
@@ -59,19 +60,26 @@ PLTFRMS := linux/arm64/v8 linux/amd64
 #.SILENT: proxysql-*
 .PHONY: proxysql-*
 .NOTPARALLEL: proxysql-*
+# use bash as shell
+#proxysql-*: SHELL := /bin/bash
 proxysql-*: ARG_PLTFRMS=$(subst $() ,$(shell echo ,),$(PLTFRMS))
 proxysql-*: DIST=$(patsubst proxysql-%,%,$@)
-proxysql-*: TAGV=$(if $(findstring $(DFLTDST),$@), $(shell echo "-t proxysql/proxysql:${VERS}"),)
-proxysql-*: TAGD=$(shell echo "-t proxysql/proxysql:${VERS}-${DIST}")
-proxysql-*: TAGL=$(shell echo "-t proxysql/proxysql:latest-${DIST}")
-proxysql-*: TAGP=$(if $(findstring $(DFLTDST),$@), $(shell echo "-t proxysql/proxysql:latest"),)
+proxysql-*: TAGL=$(if $(findstring $(DFLTDST),$@),$(shell echo "-t proxysql/proxysql:latest"),)
+proxysql-*: TAGLD=$(shell echo "-t proxysql/proxysql:latest-${DIST}")
+proxysql-*: TAGV=$(if $(findstring $(DFLTDST),$@),$(shell VERS=${VERS}; echo "-t proxysql/proxysql:$${VERS}"),)
+proxysql-*: TAGS=$(if $(findstring $(DFLTDST),$@),$(shell VERS=${VERS}; echo "-t proxysql/proxysql:$${VERS%.*}"),)
+proxysql-*: TAGM=$(if $(findstring $(DFLTDST),$@),$(shell VERS=${VERS}; echo "-t proxysql/proxysql:$${VERS%%.*}"),)
+proxysql-*: TAGVD=$(shell VERS=${VERS}; echo "-t proxysql/proxysql:$${VERS}-${DIST}")
+proxysql-*: TAGSD=$(shell VERS=${VERS}; echo "-t proxysql/proxysql:$${VERS%.*}-${DIST}")
+proxysql-*: TAGMD=$(shell VERS=${VERS}; echo "-t proxysql/proxysql:$${VERS%%.*}-${DIST}")
+proxysql-*: TAGSALL=
 proxysql-*:
 ifndef MULTIARCH
 	@echo "building native $@ for 'native'"
-	docker buildx build ${NOCACHE} --build-arg VERS=${VERS} -t proxysql/proxysql:latest -t proxysql/proxysql:latest-${DIST} -t proxysql/proxysql:${VERS} -t proxysql/proxysql:${VERS}-${DIST} --pull $@ ${LOAD} ${PUSH} ${SILENT}
+	docker buildx build ${NOCACHE} --build-arg VERS=${VERS} ${TAGL} ${TAGLD} ${TAGV} ${TAGS} ${TAGM} ${TAGVD} ${TAGSD} ${TAGMD} --pull $@ ${LOAD} ${PUSH} ${SILENT}
 else
 	@echo "building multiarch $@ for '$(ARG_PLTFRMS)'"
-	docker buildx build ${NOCACHE} --build-arg VERS=${VERS} -t proxysql/proxysql:latest -t proxysql/proxysql:latest-${DIST} -t proxysql/proxysql:${VERS} -t proxysql/proxysql:${VERS}-${DIST} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT}
+	docker buildx build ${NOCACHE} --build-arg VERS=${VERS} ${TAGL} ${TAGLD} ${TAGV} ${TAGS} ${TAGM} ${TAGVD} ${TAGSD} ${TAGMD} --pull --platform $(ARG_PLTFRMS) $@ ${PUSH} ${SILENT}
 endif
 	@echo 'tagged $@'
 
