@@ -1,4 +1,4 @@
-FROM quay.io/centos/centos:stream9
+FROM quay.io/centos/centos:10
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ARG VERS
@@ -15,7 +15,7 @@ RUN cat /etc/redhat-release >&2
 #RUN sed -i 's/#baseurl/baseurl/' /etc/yum.repos.d/CentOS-*.repo
 #RUN sed -i 's/mirror./vault./' /etc/yum.repos.d/CentOS-*.repo
 
-RUN yum -y install mysql
+RUN yum -y install mysql8.4
 
 RUN echo -e "[proxysql_repo]\nname= ProxySQL YUM repository\nbaseurl=https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/centos/\$releasever\ngpgcheck=1\ngpgkey=https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/repo_pub_key" > /etc/yum.repos.d/proxysql.repo && \
 	yum -y install proxysql-${VERS} && \

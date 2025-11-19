@@ -7,7 +7,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # clang & build tools
 RUN apt-get update && apt-get install -y \
-	make automake cmake \
+	make cmake automake bison flex \
 	git wget \
 	clang lld \
 	python3 \
