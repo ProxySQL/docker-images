@@ -1,17 +1,25 @@
 # Docker images for building and running ProxySQL
 
 Images can be found at:
-- https://hub.docker.com/repository/docker/proxysql/packaging
-- https://hub.docker.com/repository/docker/proxysql/proxysql
+- https://hub.docker.com/r/proxysql/packaging
+- https://hub.docker.com/r/proxysql/proxysql
+
+> [!NOTE]
+> - DockerHub images are tagged respective to ProxySQL version or previous if no change - e.g.: build-debian13-v3.0.3
+> - DockerHub images without version are always the latest version
+
+> [!NOTE]
+> - this git repository uses tags refering to a ProxySQL version - e.g.: tag 'v3.0.3'
+> - to get the Dockerfiles used for building and release of ProxySQL v3.0.3, use `git chekout v3.0.3`
 
 #### build-images
-- used for building of proxysql packages
+- used for building of proxysql packages usibg GCC
 - based on upstream images
 - added GCC build tooling
 - added build dependencies
 
 #### build-clang-images
-- used for building of proxysql packages
+- used for building of proxysql packages using CLang
 - based on upstream images
 - added CLANG build tooling
   - clang must use lld
