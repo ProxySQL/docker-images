@@ -12,6 +12,7 @@ RUN apt-get update && \
 
 RUN apt-get install -y \
 	default-mysql-client \
+	postgresql-client \
 	wget \
 	lsb-release \
 	gnupg \
