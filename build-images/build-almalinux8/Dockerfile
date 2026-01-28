@@ -12,7 +12,7 @@ RUN yum install -y epel-release && \
 RUN yum install -y \
 	make automake bison flex \
 	git patch \
-	bzip2 tar wget \
+	bzip2 tar wget curl \
 	gcc gcc-c++ \
 	libtool \
 	rpm-build \
@@ -36,6 +36,18 @@ RUN yum install -y \
 RUN yum install -y --enablerepo=powertools \
 	libtirpc-devel \
 	rpcgen
+
+# rust needs to link to libclang.so
+RUN yum install -y \
+	clang-devel
+
+RUN export RUST_VERSION="1.92.0" && \
+	export RUST_ARCH="$(uname -m)" && \
+	curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu.tar.gz" | tar xzf - && \
+	./rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu/install.sh --prefix=/usr/local && \
+	rm -rf ./rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu/
+RUN	rustc --version  && \
+	cargo --version
 
 # debug images need valgrind
 RUN yum install -y \

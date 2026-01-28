@@ -13,7 +13,7 @@ RUN zypper update -y
 RUN zypper install -y \
 	make cmake automake bison flex \
 	git patch \
-	bzip2 gzip tar wget \
+	bzip2 gzip tar wget curl \
 	gcc gcc-c++ \
 	rpm-build \
 	python3 \
@@ -40,6 +40,18 @@ RUN zypper install -y \
 
 #RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 50
 #RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 50
+
+# rust needs to link to libclang.so
+RUN zypper install -y \
+	clang-devel
+
+RUN export RUST_VERSION="1.92.0" && \
+	export RUST_ARCH="$(uname -m)" && \
+	curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu.tar.gz" | tar xzf - && \
+	./rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu/install.sh --prefix=/usr/local && \
+	rm -rf ./rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu/
+RUN	rustc --version  && \
+	cargo --version
 
 # debug images need valgrind
 RUN zypper install -y \

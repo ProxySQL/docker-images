@@ -9,7 +9,7 @@ RUN apt update && \
 # gcc & build tools
 RUN apt install -y \
 	make cmake automake bison flex \
-	git wget \
+	git wget curl \
 	gcc g++ \
 	libtool \
 	gdb gdbserver \
@@ -26,6 +26,18 @@ RUN apt install -y \
 	libncurses-dev \
 	libicu-dev \
 	libevent-dev
+
+# rust needs to link to libclang.so
+RUN apt install -y \
+	libclang-dev
+
+RUN export RUST_VERSION="1.92.0" && \
+	export RUST_ARCH="$(uname -m)" && \
+	curl -sLf "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu.tar.gz" | tar xzf - && \
+	./rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu/install.sh --prefix=/usr/local && \
+	rm -rf ./rust-${RUST_VERSION}-${RUST_ARCH}-unknown-linux-gnu/
+RUN	rustc --version  && \
+	cargo --version
 
 # debug images need valgrind
 RUN apt install -y \
