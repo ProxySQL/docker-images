@@ -31,7 +31,8 @@ RUN yum install -y \
 	zlib-devel \
 	libicu-devel \
 	libevent-devel \
-	ncurses-devel
+	ncurses-devel \
+	systemd-rpm-macros
 
 # install from CRB repo
 RUN yum install -y --enablerepo=crb \

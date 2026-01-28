@@ -28,7 +28,8 @@ RUN zypper install -y \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel \
-	ncurses-devel
+	ncurses-devel \
+	systemd-rpm-macros
 
 #RUN zypper addrepo -f 'http://download.opensuse.org/tumbleweed/repo/oss/' tumbleweed-oss
 RUN zypper addrepo -f 'http://download.opensuse.org/distribution/leap/16.0/repo/oss/' leap-16.0-oss
