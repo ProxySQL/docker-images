@@ -25,7 +25,8 @@ RUN yum install -y\
 	gcc gcc-c++\
 	libtool\
 	rpm-build\
-	python3
+	python3\
+	systemd-rpm-macros
 
 # proxysql build dependencies
 RUN yum install -y\

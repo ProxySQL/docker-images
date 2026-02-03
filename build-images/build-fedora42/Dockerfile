@@ -13,7 +13,8 @@ RUN dnf install -y \
 	libtool \
 	rpm-build \
 	python3 \
-	pkg-config
+	pkg-config \
+	systemd-rpm-macros
 
 # proxysql build dependencies
 RUN dnf install -y \

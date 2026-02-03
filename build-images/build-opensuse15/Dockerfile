@@ -18,7 +18,8 @@ RUN zypper install -y \
 	rpm-build \
 	python3 \
 	libtool \
-	pkg-config
+	pkg-config \
+	systemd-rpm-macros
 
 # proxysql build dependencies
 RUN zypper install -y \
