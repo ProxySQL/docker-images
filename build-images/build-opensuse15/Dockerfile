@@ -29,7 +29,8 @@ RUN zypper install -y \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel \
-	ncurses-devel
+	ncurses-devel \
+	systemd-rpm-macros
 
 RUN zypper addrepo -f 'http://download.opensuse.org/distribution/leap/15.6/repo/oss/' leap-15.6-oss
 RUN zypper install -y \

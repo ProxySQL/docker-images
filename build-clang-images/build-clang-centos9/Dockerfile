@@ -31,7 +31,8 @@ RUN yum install -y \
 	libuuid-devel \
 	zlib-devel \
 	libicu-devel \
-	libevent-devel
+	libevent-devel \
+	systemd-rpm-macros
 
 # cleanup rpm cache
 RUN yum clean all && \
