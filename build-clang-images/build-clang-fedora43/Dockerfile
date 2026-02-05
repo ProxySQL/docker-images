@@ -28,7 +28,8 @@ RUN dnf install -y \
 	perl-IPC-Cmd \
 	libuuid-devel \
 	libicu-devel \
-	libevent-devel
+	libevent-devel \
+	systemd-rpm-macros
 
 # cleanup rpm cache
 RUN dnf clean all && \

@@ -27,7 +27,8 @@ RUN dnf install -y \
 	libuuid-devel \
 	libicu-devel \
 	libevent-devel \
-	ncurses-devel
+	ncurses-devel \
+	systemd-rpm-macros
 
 # install from CRB repo on CentOS
 RUN yum install -y \
