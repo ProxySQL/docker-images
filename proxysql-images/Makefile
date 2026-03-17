@@ -27,7 +27,7 @@ endif
 
 ifndef VERS
 # get latest release version
-VERS := $(shell curl -s "https://api.github.com/repos/sysown/proxysql/releases/latest" | jq -r '.name' | tr -d 'v')
+VERS := $(shell curl -s "https://api.github.com/repos/sysown/proxysql/releases/latest" | jq -r '.tag_name' | sed 's/^v//')
 endif
 
 
