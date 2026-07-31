@@ -44,7 +44,10 @@ fi
 
 echo "--- Test 3: ENV is inherited by derived images ---"
 DERIVED_IMAGE="proxysql-test-derived:${VERS}-${DIST}"
-echo "FROM ${IMAGE}" | docker buildx build -t "$DERIVED_IMAGE" --load -q -
+TMPDIR_DERIVED=$(mktemp -d)
+echo "FROM ${IMAGE}" > "${TMPDIR_DERIVED}/Dockerfile"
+docker build -t "$DERIVED_IMAGE" "$TMPDIR_DERIVED" -q
+rm -rf "$TMPDIR_DERIVED"
 DERIVED_VERSION=$(docker run --rm "$DERIVED_IMAGE" printenv PROXYSQL_VERSION)
 if [ "$DERIVED_VERSION" = "$VERS" ]; then
 	echo "PASS: derived image inherits PROXYSQL_VERSION=${DERIVED_VERSION}"
