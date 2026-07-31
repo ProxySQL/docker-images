@@ -1,0 +1,35 @@
+name: ProxySQL Image Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'proxysql-images/**'
+  pull_request:
+    paths:
+      - 'proxysql-images/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dist: [debian, centos]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get latest ProxySQL version
+        id: version
+        run: |
+          vers=$(curl -s "https://api.github.com/repos/sysown/proxysql/releases/latest" | jq -r '.tag_name' | sed 's/^v//')
+          echo "vers=$vers" >> "$GITHUB_OUTPUT"
+
+      - name: Build and test proxysql-${{ matrix.dist }}
+        working-directory: proxysql-images
+        run: |
+          chmod +x test.sh
+          VERS=${{ steps.version.outputs.vers }} DIST=${{ matrix.dist }} ./test.sh
