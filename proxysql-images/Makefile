@@ -84,6 +84,10 @@ endif
 	@echo 'tagged $@'
 
 
+.PHONY: test
+test:
+	VERS=${VERS} DIST=${DIST} ./test.sh
+
 list:
 	@echo "Available 'proxysql/proxysql' images:"
 	@docker images | grep "proxysql/proxysql"
