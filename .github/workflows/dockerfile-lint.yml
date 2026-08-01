@@ -11,8 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run hadolint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          recursive: true
-          failure-threshold: error
+      - name: Run hadolint on active Dockerfiles
+        run: |
+          find . -name 'Dockerfile*' -not -path './.git/*' -not -path '*/obsolete/*' -print0 | \
+            xargs -0 -n1 docker run --rm -i hadolint/hadolint hadolint --failure-threshold error -
