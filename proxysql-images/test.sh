@@ -5,15 +5,25 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 VERS="${VERS:-}"
 if [ -z "$VERS" ]; then
-	VERS=$(curl -s "https://api.github.com/repos/sysown/proxysql/releases/latest" | jq -r '.tag_name' | sed 's/^v//')
+	RESPONSE=$(curl -sf --max-time 30 "https://api.github.com/repos/sysown/proxysql/releases/latest") || {
+		echo "ERROR: Failed to fetch latest release from GitHub API" >&2
+		exit 1
+	}
+	VERS=$(echo "$RESPONSE" | jq -r '.tag_name // empty' | sed 's/^v//')
+	if [ -z "$VERS" ]; then
+		echo "ERROR: Could not determine latest ProxySQL version from GitHub API response" >&2
+		exit 1
+	fi
 fi
 
 DIST="${DIST:-debian}"
 IMAGE="proxysql-test:${VERS}-${DIST}"
+DERIVED_IMAGE="proxysql-test-derived:${VERS}-${DIST}"
 FAILED=0
 
 cleanup() {
 	docker rmi -f "$IMAGE" >/dev/null 2>&1 || true
+	docker rmi -f "$DERIVED_IMAGE" >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
@@ -55,7 +65,6 @@ else
 	echo "FAIL: derived image PROXYSQL_VERSION='${DERIVED_VERSION}', expected '${VERS}'"
 	FAILED=1
 fi
-docker rmi -f "$DERIVED_IMAGE" >/dev/null 2>&1 || true
 
 echo ""
 if [ "$FAILED" -eq 0 ]; then
