@@ -13,5 +13,7 @@ jobs:
 
       - name: Run hadolint on active Dockerfiles
         run: |
-          find . -name 'Dockerfile*' -not -path './.git/*' -not -path '*/obsolete/*' -print0 | \
-            xargs -0 -n1 docker run --rm -i hadolint/hadolint hadolint --failure-threshold error -
+          find . -name 'Dockerfile*' -not -path './.git/*' -not -path '*/obsolete/*' | while read -r f; do
+            echo "Linting: $f"
+            docker run --rm -v "${PWD}:/work" -i hadolint/hadolint hadolint --failure-threshold error "/work/$f"
+          done
