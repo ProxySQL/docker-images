@@ -2,6 +2,7 @@ FROM quay.io/centos/centos:10
 LABEL authors="Miro Stauder <miro@sysown.com>"
 
 ARG VERS
+ENV PROXYSQL_VERSION="${VERS}"
 
 RUN [ -z "$VERS" ] && echo -n "\nERROR: Specify version to build. e.g:\ndocker build --build-arg VERS=2.5.1 .\n\n" >&2 && exit 1 || true
 

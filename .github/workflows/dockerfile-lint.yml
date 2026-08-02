@@ -1,0 +1,19 @@
+name: Dockerfile Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run hadolint on active Dockerfiles
+        run: |
+          find . -name 'Dockerfile*' -not -path './.git/*' -not -path '*/obsolete/*' | while read -r f; do
+            echo "Linting: $f"
+            docker run --rm -v "${PWD}:/work" -i hadolint/hadolint hadolint --failure-threshold error "/work/$f"
+          done
