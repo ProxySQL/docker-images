@@ -61,6 +61,21 @@ e.g.:
     PUSH=1 make [target]
 
 ---
+### Ubuntu 26.04 (resolute) packaging builders
+
+Ubuntu 26.04 packaging is supported starting with ProxySQL 3.0.12, 3.1.12,
+and 4.0.12. The same builder images serve all three tiers. To build and load
+the image tags referenced by ProxySQL's `docker-compose.yml` locally:
+
+```bash
+make -C build-images VERS=4.0.0 LOAD=1 build-ubuntu26
+make -C build-clang-images VERS=4.0.0 LOAD=1 build-clang-ubuntu26
+```
+
+For release CI, publish the AMD64 and ARM64 images using `PUSH=1` instead of
+`LOAD=1` after configuring the multiarch builder described below.
+
+---
 ### Setup Docker for local multiarch via Qemu
 
 > [!NOTE]
