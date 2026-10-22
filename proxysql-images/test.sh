@@ -5,15 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 VERS="${VERS:-}"
 if [ -z "$VERS" ]; then
-	RESPONSE=$(curl -sf --max-time 30 "https://api.github.com/repos/sysown/proxysql/releases/latest") || {
-		echo "ERROR: Failed to fetch latest release from GitHub API" >&2
-		exit 1
-	}
-	VERS=$(echo "$RESPONSE" | jq -r '.tag_name // empty' | sed 's/^v//')
-	if [ -z "$VERS" ]; then
-		echo "ERROR: Could not determine latest ProxySQL version from GitHub API response" >&2
-		exit 1
-	fi
+	VERS=$(jq -er '.releases[0].version' "${SCRIPT_DIR}/releases.json")
 fi
 
 DIST="${DIST:-debian}"
@@ -29,7 +21,7 @@ trap cleanup EXIT
 
 echo "=== Testing proxysql-${DIST} with VERS=${VERS} ==="
 
-docker buildx build --build-arg VERS="$VERS" -t "$IMAGE" --load -q "${SCRIPT_DIR}/proxysql-${DIST}"
+docker buildx build --pull --no-cache --build-arg VERS="$VERS" -t "$IMAGE" --load -q "${SCRIPT_DIR}/proxysql-${DIST}"
 
 echo "--- Test 1: PROXYSQL_VERSION env var is set ---"
 ENV_VERSION=$(docker run --rm "$IMAGE" printenv PROXYSQL_VERSION)
@@ -65,6 +57,14 @@ else
 	echo "FAIL: derived image PROXYSQL_VERSION='${DERIVED_VERSION}', expected '${VERS}'"
 	FAILED=1
 fi
+
+echo "--- Test 4: effective CA trust and ProxySQL startup ---"
+case "$(docker info --format '{{.Architecture}}')" in
+	x86_64|amd64) arch=amd64 ;;
+	aarch64|arm64) arch=arm64 ;;
+	*) echo 'Unsupported Docker architecture' >&2; exit 1 ;;
+esac
+"${SCRIPT_DIR}/verify-image.sh" "$IMAGE" "$VERS" "$DIST" "$arch"
 
 echo ""
 if [ "$FAILED" -eq 0 ]; then

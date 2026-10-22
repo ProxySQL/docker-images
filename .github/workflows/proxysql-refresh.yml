@@ -1,0 +1,104 @@
+name: Refresh ProxySQL runtime images
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * 1'
+  push:
+    branches: [main]
+    paths:
+      - 'proxysql-images/**'
+      - '.github/workflows/proxysql-refresh.yml'
+
+permissions:
+  contents: read
+
+# One run owns the staging tags until every architecture is tested/promoted.
+concurrency:
+  group: proxysql-runtime-refresh
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    outputs:
+      build: ${{ steps.plan.outputs.build }}
+      publish: ${{ steps.plan.outputs.publish }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate release policy and plan images
+        id: plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s proxysql-images/tests -v
+          plan=$(python3 proxysql-images/release_plan.py)
+          echo "build=$(jq -c '.build' <<< "$plan")" >> "$GITHUB_OUTPUT"
+          echo "publish=$(jq -c '.publish' <<< "$plan")" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.plan.outputs.build) }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    env:
+      VERSION: ${{ matrix.version }}
+      DIST: ${{ matrix.dist }}
+      ARCH: ${{ matrix.arch }}
+      STAGING: ${{ matrix.staging }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Build with fresh base and package indexes
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker buildx build --pull --no-cache --load \
+            --platform "linux/$ARCH" --build-arg "VERS=$VERSION" \
+            --tag "$STAGING" "proxysql-images/proxysql-$DIST"
+      - name: Verify effective CA distrust and ProxySQL startup
+        run: proxysql-images/verify-image.sh "$STAGING" "$VERSION" "$DIST" "$ARCH"
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push verified architecture image to staging
+        run: docker push "$STAGING"
+
+  publish:
+    needs: [plan, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.plan.outputs.publish) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      IMAGE_TAGS: ${{ toJson(matrix.tags) }}
+      IMAGE_SOURCES: ${{ toJson(matrix.sources) }}
+    steps:
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Promote both tested architectures to release tags
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t tags < <(jq -r '.[]' <<< "$IMAGE_TAGS")
+          mapfile -t sources < <(jq -r '.[]' <<< "$IMAGE_SOURCES")
+          # Publish one tag at a time: some Buildx releases race when a single
+          # imagetools invocation pushes multiple tags concurrently.
+          for tag in "${tags[@]}"; do
+            docker buildx imagetools create --tag "$tag" "${sources[@]}"
+            docker buildx imagetools inspect --raw "$tag" | jq -e \
+              '[.manifests[].platform | select(.os == "linux") | .architecture] | sort == ["amd64", "arm64"]'
+            echo "Published $tag (AMD64 + ARM64)" >> "$GITHUB_STEP_SUMMARY"
+          done

@@ -34,6 +34,53 @@ Images can be found at:
 #### proxysql-images
 - proxysql prebuild image
 
+### Runtime image security refreshes
+
+Runtime images are refreshed every Monday at 04:17 UTC, on runtime-image
+changes merged into `main`, and through **Actions → Refresh ProxySQL runtime
+images → Run workflow**. Configure repository secrets `DOCKERHUB_USERNAME`
+and `DOCKERHUB_TOKEN` with permission to push to `proxysql/proxysql`.
+
+`proxysql-images/releases.json` is the reviewed release policy. It currently
+refreshes **3.0.11**, the version published under `latest`. Update the policy
+when publishing a new supported release. Do not derive `latest` from GitHub's
+most recently published release: maintenance releases from an older major
+series can be newer by date. An empty `aliases` list refreshes a historical
+version without moving floating tags. Duplicate aliases and aliases for an
+unrelated release line are rejected before any image is built.
+
+The workflow builds Debian and CentOS images on native AMD64 and ARM64 runners
+with `--pull --no-cache`. Each image must pass effective CA-bundle checks,
+version/architecture checks, and a ProxySQL startup/admin `SELECT 1` test.
+Only after **all** build/test jobs succeed are the verified per-architecture
+`refresh-<version>-<distro>-<arch>` staging images promoted to multiarch release
+tags. These bounded staging tags are reused by later refreshes.
+
+The normal tag convention is preserved: Debian receives the version and
+configured aliases both with and without `-debian`; CentOS receives the same
+names with `-centos`. The ProxySQL application version stays unchanged during
+an OS security refresh, while the image digest changes. Existing containers
+must be pulled and recreated to receive the fix; digest-pinned deployments
+must explicitly select the new digest.
+
+For [sysown/proxysql#6519](https://github.com/sysown/proxysql/issues/6519), Debian
+requires `ca-certificates >= 20250419+deb13u1`, the security update described in
+[DSA-6572-1](https://lists.debian.org/debian-security-announce/2026/msg00487.html).
+CentOS explicitly distrusts the same two roots until the distro supplies the
+corresponding update. The public certificates in
+`proxysql-images/proxysql-centos/ca-distrust/` come from Debian's Mozilla CA
+package and have these SHA-256 fingerprints:
+
+- emSign ECC Root CA - G3:
+  `86:A1:EC:BA:08:9C:4A:8D:3B:BE:27:34:C6:12:BA:34:1D:81:3E:04:3C:F9:E8:A8:62:CD:5C:57:A3:6B:BE:6B`
+- AAA Certificate Services:
+  `D7:A7:A0:FB:5D:7E:27:31:D7:71:E9:48:4E:BC:DE:F7:1D:5F:0C:3E:0A:29:48:78:2B:C8:3E:E0:EA:69:9E:F4`
+
+The CA regression test uses `openssl verify -no_check_time` against the
+effective trust bundle. It therefore detects trusted roots even after they
+expire, and does not mistake retained but distrusted source PEM files for
+active trust anchors.
+
 ---
 ### How to build images
 

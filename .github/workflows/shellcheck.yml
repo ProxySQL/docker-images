@@ -15,10 +15,16 @@ jobs:
         id: find
         run: |
           files=$(find . -name '*.sh' -not -path './.git/*' | sort)
-          echo "files<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$files" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+          {
+            echo "files<<EOF"
+            echo "$files"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Run shellcheck
         if: steps.find.outputs.files != ''
-        run: shellcheck ${{ steps.find.outputs.files }}
+        env:
+          SHELLCHECK_FILES: ${{ steps.find.outputs.files }}
+        run: |
+          mapfile -t files <<< "$SHELLCHECK_FILES"
+          shellcheck "${files[@]}"

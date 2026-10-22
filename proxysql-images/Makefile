@@ -26,8 +26,9 @@ override NOCACHE := --no-cache
 endif
 
 ifndef VERS
-# get latest release version
-VERS := $(shell curl -s "https://api.github.com/repos/sysown/proxysql/releases/latest" | jq -r '.tag_name' | sed 's/^v//')
+# Follow the maintained runtime-image release policy, not release timestamps
+# across different ProxySQL major series.
+VERS := $(shell jq -er '.releases[0].version' releases.json)
 endif
 
 
