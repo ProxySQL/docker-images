@@ -21,4 +21,8 @@ jobs:
 
       - name: Run shellcheck
         if: steps.find.outputs.files != ''
-        run: shellcheck ${{ steps.find.outputs.files }}
+        env:
+          SHELLCHECK_FILES: ${{ steps.find.outputs.files }}
+        run: |
+          mapfile -t files <<< "$SHELLCHECK_FILES"
+          shellcheck "${files[@]}"
