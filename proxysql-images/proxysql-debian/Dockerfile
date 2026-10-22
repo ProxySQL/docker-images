@@ -9,7 +9,8 @@ RUN [ -z "$VERS" ] && echo -n "\nERROR: Specify version to build. e.g:\ndocker b
 RUN cat /etc/os-release
 
 RUN apt-get update && \
-	apt-get install -y apt-utils
+	apt-get upgrade -y && \
+	apt-get install -y apt-utils ca-certificates openssl
 
 RUN apt-get install -y \
 	default-mysql-client \
@@ -19,6 +20,10 @@ RUN apt-get install -y \
 	gnupg \
 	apt-transport-https \
 	ca-certificates
+
+# DSA-6572-1 removes trust in the compromised eMudhra certificate chains.
+# Fail the build if a mirror has not received the security update yet.
+RUN dpkg --compare-versions "$(dpkg-query -W -f='${Version}' ca-certificates)" ge '20250419+deb13u1'
 
 RUN wget -nv -O - "https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/repo_pub_key" | \
 	gpg --dearmor > /etc/apt/trusted.gpg.d/proxysql-${VERS%.*}.x-keyring.gpg

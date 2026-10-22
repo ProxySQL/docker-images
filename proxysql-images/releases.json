@@ -1,0 +1,8 @@
+{
+  "releases": [
+    {
+      "version": "3.0.11",
+      "aliases": ["3.0", "3", "latest"]
+    }
+  ]
+}

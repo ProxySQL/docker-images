@@ -16,8 +16,13 @@ RUN cat /etc/redhat-release >&2
 #RUN sed -i 's/#baseurl/baseurl/' /etc/yum.repos.d/CentOS-*.repo
 #RUN sed -i 's/mirror./vault./' /etc/yum.repos.d/CentOS-*.repo
 
-RUN yum -y install mysql8.4 \
-	postgresql
+RUN yum -y upgrade && \
+	yum -y install ca-certificates openssl mysql8.4 postgresql
+
+# Until the distro ships the corresponding distrust, apply the same two-root
+# blocklist as Debian DSA-6572-1. This persists across CA package upgrades.
+COPY ca-distrust/ /etc/pki/ca-trust/source/blocklist/
+RUN update-ca-trust extract
 
 RUN echo -e "[proxysql_repo]\nname= ProxySQL YUM repository\nbaseurl=https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/centos/\$releasever\ngpgcheck=1\ngpgkey=https://repo.proxysql.com/ProxySQL/proxysql-${VERS%.*}.x/repo_pub_key" > /etc/yum.repos.d/proxysql.repo && \
 	yum -y install proxysql-${VERS} && \
