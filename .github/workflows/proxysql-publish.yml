@@ -1,0 +1,208 @@
+name: Publish ProxySQL Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published stable ProxySQL version (without v)
+        required: true
+        type: string
+      publish:
+        description: Publish tested images to Docker Hub (main only)
+        default: false
+        type: boolean
+  pull_request:
+    paths:
+      - '.github/workflows/proxysql-publish.yml'
+      - 'proxysql-images/proxysql-debian/**'
+      - 'proxysql-images/proxysql-centos/**'
+
+permissions:
+  contents: read
+
+# Serialize manual releases so their shared tags cannot race. PRs build only.
+concurrency:
+  group: proxysql-images-${{ github.event_name == 'workflow_dispatch' && 'release' || github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  IMAGE_NAME: docker.io/proxysql/proxysql
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Validate published stable release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          if [[ "$PUBLISH" == true && "$GITHUB_REF" != refs/heads/main ]]; then
+            echo '::error::Publishing is only allowed from main.'
+            exit 1
+          fi
+          version="$REQUESTED_VERSION"
+          if [[ -z "$version" ]]; then
+            version=$(gh api repos/sysown/proxysql/releases/latest --jq '.tag_name | ltrimstr("v")')
+          fi
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo '::error::Version must be X.Y.Z without a v prefix.'
+            exit 1
+          fi
+          gh api "repos/sysown/proxysql/releases/tags/v$version" > release.json
+          jq -e '.draft == false and .prerelease == false' release.json
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Building ProxySQL $version from the signed package repositories." >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    name: Build and test ${{ matrix.dist }} / ${{ matrix.arch }}
+    needs: prepare
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        dist: [debian, centos]
+        arch: [amd64, arm64]
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
+      DIST: ${{ matrix.dist }}
+      ARCH: ${{ matrix.arch }}
+      LOCAL_IMAGE: local/proxysql:${{ matrix.dist }}-${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@v3
+
+      # Installing the selected package also checks signed repository availability
+      # for this distribution and architecture. No registry writes happen here.
+      - name: Build native image
+        run: |
+          docker buildx build --pull --load --build-arg "VERS=$VERSION" \
+            --tag "$LOCAL_IMAGE" "proxysql-images/proxysql-$DIST"
+
+      - name: Test version, architecture, clients and startup
+        run: |
+          test "$(docker image inspect "$LOCAL_IMAGE" --format '{{.Architecture}}')" = "$ARCH"
+          test "$(docker run --rm "$LOCAL_IMAGE" printenv PROXYSQL_VERSION)" = "$VERSION"
+          output=$(docker run --rm "$LOCAL_IMAGE" proxysql --version 2>&1)
+          printf '%s\n' "$output"
+          installed=$(printf '%s\n' "$output" | sed -nE 's/^ProxySQL version ([0-9]+\.[0-9]+\.[0-9]+).*/\1/p')
+          test "$installed" = "$VERSION"
+          docker run --rm "$LOCAL_IMAGE" mysql --version
+          docker run --rm "$LOCAL_IMAGE" psql --version
+          docker run --rm "$LOCAL_IMAGE" test -r /etc/proxysql.cnf
+          container=$(docker run -d "$LOCAL_IMAGE")
+          trap 'docker rm -f "$container" >/dev/null' EXIT
+          for attempt in {1..30}; do
+            if docker exec "$container" mysql -h127.0.0.1 -P6032 -uadmin -padmin \
+              --batch --skip-column-names -e 'SELECT 1' > result.txt 2>/dev/null; then
+              test "$(cat result.txt)" = 1
+              exit 0
+            fi
+            echo "Waiting for ProxySQL admin interface ($attempt/30)."
+            sleep 2
+          done
+          docker logs "$container"
+          echo '::error::ProxySQL admin interface did not become ready.'
+          exit 1
+
+      - name: Export tested image
+        run: |
+          docker image inspect "$LOCAL_IMAGE" --format '{{.Id}}' > "$RUNNER_TEMP/image-id.txt"
+          docker save "$LOCAL_IMAGE" | gzip > "$RUNNER_TEMP/image.tar.gz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: runtime-${{ matrix.dist }}-${{ matrix.arch }}
+          path: |
+            ${{ runner.temp }}/image.tar.gz
+            ${{ runner.temp }}/image-id.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+
+  publish:
+    name: Publish tested images and multi-platform tags
+    needs: [prepare, build]
+    if: github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: docker/setup-buildx-action@v3
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: runtime-*
+          path: images
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Every build/test job has succeeded before this job can write to Docker Hub.
+      # Load the tested artifacts directly; do not rebuild after testing.
+      - name: Publish architecture images
+        run: |
+          for dist in debian centos; do
+            for arch in amd64 arm64; do
+              directory="images/runtime-$dist-$arch"
+              local_image="local/proxysql:$dist-$arch"
+              docker load --input "$directory/image.tar.gz"
+              test "$(docker image inspect "$local_image" --format '{{.Id}}')" = "$(cat "$directory/image-id.txt")"
+              test "$(docker image inspect "$local_image" --format '{{.Architecture}}')" = "$arch"
+              remote_image="$IMAGE_NAME:$VERSION-$dist-$arch"
+              docker tag "$local_image" "$remote_image"
+              docker push "$remote_image"
+            done
+          done
+
+      - name: Assemble and verify both multi-platform releases
+        run: |
+          for dist in debian centos; do
+            tags=(--tag "$IMAGE_NAME:$VERSION-$dist")
+            if [[ "$dist" == debian ]]; then
+              tags+=(--tag "$IMAGE_NAME:$VERSION")
+            fi
+            docker buildx imagetools create "${tags[@]}" \
+              "$IMAGE_NAME:$VERSION-$dist-amd64" "$IMAGE_NAME:$VERSION-$dist-arm64"
+            docker buildx imagetools inspect "$IMAGE_NAME:$VERSION-$dist" --raw > "$RUNNER_TEMP/$dist-manifest.json"
+            jq -e '(.manifests | length) == 2 and ([.manifests[].platform | .os + "/" + .architecture] | sort) == ["linux/amd64", "linux/arm64"]' \
+              "$RUNNER_TEMP/$dist-manifest.json"
+            echo "Published $IMAGE_NAME:$VERSION-$dist (AMD64 and ARM64)." >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Update aliases only for the current latest stable release
+        run: |
+          latest=$(gh api repos/sysown/proxysql/releases/latest --jq '.tag_name | ltrimstr("v")')
+          if [[ "$VERSION" != "$latest" ]]; then
+            echo "Version tags published; shared aliases unchanged because latest stable is $latest." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          series=${VERSION%.*}
+          major=${VERSION%%.*}
+          for dist in debian centos; do
+            tags=(--tag "$IMAGE_NAME:latest-$dist" --tag "$IMAGE_NAME:$series-$dist" --tag "$IMAGE_NAME:$major-$dist")
+            if [[ "$dist" == debian ]]; then
+              tags+=(--tag "$IMAGE_NAME:latest" --tag "$IMAGE_NAME:$series" --tag "$IMAGE_NAME:$major")
+            fi
+            docker buildx imagetools create "${tags[@]}" "$IMAGE_NAME:$VERSION-$dist"
+          done
+          echo "Updated latest, $series and $major aliases for $VERSION." >> "$GITHUB_STEP_SUMMARY"

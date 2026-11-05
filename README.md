@@ -34,6 +34,44 @@ Images can be found at:
 #### proxysql-images
 - proxysql prebuild image
 
+### Publish runtime images with GitHub Actions
+
+Use **Actions → Publish ProxySQL Images → Run workflow** on `main` and enter
+the published stable version, without `v` (for example, `3.0.12`). Leave
+**publish** unchecked for a build and test run, or check it to publish after
+all tests pass. The equivalent CLI command is:
+
+```bash
+gh workflow run proxysql-publish.yml --repo ProxySQL/docker-images --ref main \
+  -f version=3.0.12 -F publish=true
+```
+
+The workflow builds Debian 13 and CentOS 10 images on native AMD64 and ARM64
+GitHub-hosted runners. Each build installs the requested version from the
+signed ProxySQL package repository, so the release must be deployed there
+for both distributions and architectures first. Draft and prerelease
+GitHub releases are rejected.
+
+Tests check the image architecture, version environment variable, installed
+ProxySQL version, MySQL and PostgreSQL clients, configuration file, and a
+running ProxySQL admin query. All four images must pass before any Docker
+Hub writes. The publishing job downloads the tested images as artifacts,
+checks their image IDs and publishes them without rebuilding. Artifacts are
+retained for one day.
+
+Publishing uses the existing repository secrets `DOCKERHUB_USERNAME` and
+`DOCKERHUB_TOKEN`; the token needs write access to `proxysql/proxysql`. Local
+`docker login` is not required. Pull requests build and test the latest
+stable release without logging in or publishing. Manual publishing is
+restricted to `main`, and manual runs are serialized.
+
+The version tags are `X.Y.Z` (Debian), `X.Y.Z-debian` and `X.Y.Z-centos`, with
+both architectures in each manifest. Per-architecture tags are also
+published as `X.Y.Z-{debian,centos}-{amd64,arm64}`. Only when the requested
+version is the current latest stable GitHub release does the workflow
+update `latest`, `X.Y`, `X` and the corresponding `-debian` and `-centos`
+aliases. Publishing an older release leaves those aliases unchanged.
+
 ---
 ### How to build images
 
